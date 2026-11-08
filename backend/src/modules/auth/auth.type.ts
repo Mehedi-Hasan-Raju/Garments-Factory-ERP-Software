@@ -23,3 +23,13 @@ export interface AuthTokens {
 export interface LoginResponse {
   user: AuthenticatedUser;
 }
+
+
+declare global {
+  namespace Express {
+    interface Request {
+      authUser?: AuthenticatedUser;
+      authSessionId?: string;
+    }
+  }
+}

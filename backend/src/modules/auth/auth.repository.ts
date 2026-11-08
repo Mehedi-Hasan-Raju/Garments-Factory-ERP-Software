@@ -65,6 +65,19 @@ export const authRepository = {
     });
   },
 
+  // Find session by session ID
+findSessionById(sessionId: string) {
+  return prisma.userSession.findUnique({
+    where: { id: sessionId },
+    include: {
+      user: {
+        include: userAuthInclude,
+      },
+    },
+  });
+},
+
+
   // Revoke a specific session
   revokeSession(sessionId: string) {
     return prisma.userSession.update({

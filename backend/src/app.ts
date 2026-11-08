@@ -3,8 +3,10 @@ import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import { pinoHttp } from "pino-http";
-
+import cookieParser from "cookie-parser";
+import authRoutes from "./modules/auth/auth.route.js";
 const app = express();
+app.use(cookieParser());
 
 
 
@@ -50,7 +52,7 @@ const apiLimiter = rateLimit({
 
 
 app.use("/api", apiLimiter);
-
+app.use("/api/v1/auth", authRoutes);
 
 
 
