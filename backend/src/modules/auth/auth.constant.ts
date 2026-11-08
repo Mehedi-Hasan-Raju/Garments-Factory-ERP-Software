@@ -1,0 +1,10 @@
+export const AUTH_CONSTANTS = {
+  ACCESS_TOKEN_EXPIRES_IN: "15m",
+  REFRESH_TOKEN_DAYS: 7,
+  REFRESH_TOKEN_BYTES: 64,
+  BCRYPT_SALT_ROUNDS: 12,
+  COOKIE_NAMES: {
+    ACCESS_TOKEN: "accessToken",
+    REFRESH_TOKEN: "refreshToken",
+  },
+} as const;

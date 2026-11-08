@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -5,4 +6,160 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+  LOCKED
+}
+
+enum EmployeeStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+  TERMINATED
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  TEMPORARY
+}
+
+model Department {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String     @unique @db.VarChar(100)
+  code        String     @unique @db.VarChar(30)
+  description String?    @db.Text
+  isActive    Boolean    @default(true)
+
+  employees   Employee[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([isActive])
+}
+
+
+
+model Employee {
+  id             String         @id @default(uuid()) @db.Uuid
+  employeeCode   String         @unique @db.VarChar(50)
+  firstName      String         @db.VarChar(100)
+  lastName       String         @db.VarChar(100)
+  email          String?        @unique @db.VarChar(150)
+  phone          String?        @unique @db.VarChar(30)
+  designation    String?        @db.VarChar(100)
+  employmentType EmploymentType @default(FULL_TIME)
+  joiningDate    DateTime?
+  status         EmployeeStatus @default(ACTIVE)
+
+  departmentId   String?  @db.Uuid
+  department     Department?    @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+
+  user           User?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([departmentId, status])
+  @@index([firstName, lastName])
+}
+
+
+
+model Role {
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @unique @db.VarChar(80)
+  code        String           @unique @db.VarChar(50)
+  description String?          @db.Text
+  isSystem    Boolean          @default(false)
+  isActive    Boolean          @default(true)
+
+  users       User[]
+  permissions RolePermission[]
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([isActive])
+}
+
+
+
+model Permission {
+  id          String           @id @default(uuid()) @db.Uuid
+  name        String           @db.VarChar(100)
+  code        String           @unique @db.VarChar(120)
+  module      String           @db.VarChar(80)
+  description String?          @db.Text
+
+  roles       RolePermission[]
+
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([module])
+}
+
+
+
+model RolePermission {
+  roleId       String     @db.Uuid
+  permissionId String     @db.Uuid
+
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  createdAt    DateTime   @default(now())
+
+  @@id([roleId, permissionId])
+  @@index([permissionId])
+}
+
+
+
+model User {
+  id           String       @id @default(uuid()) @db.Uuid
+  email        String       @unique @db.VarChar(150)
+  passwordHash String       @db.VarChar(255)
+  status       UserStatus   @default(ACTIVE)
+
+  roleId       String       @db.Uuid
+  role         Role         @relation(fields: [roleId], references: [id], onDelete: Restrict)
+
+  employeeId   String?      @unique @db.Uuid
+  employee     Employee?    @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  lastLoginAt  DateTime?
+  sessions     UserSession[]
+
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([roleId, status])
+}
+
+
+
+model UserSession {
+  id               String    @id @default(uuid()) @db.Uuid
+  refreshTokenHash String    @unique @db.VarChar(255)
+  userId           String    @db.Uuid
+
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  ipAddress        String?   @db.VarChar(45)
+  userAgent        String?   @db.Text
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([expiresAt])
 }
