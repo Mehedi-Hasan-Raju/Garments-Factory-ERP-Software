@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { randomBytes, createHash } from "node:crypto";
-
+import { AppError } from "../../lib/app-error.js";
 import { authRepository } from "./auth.repository.js";
 import { AUTH_CONSTANTS } from "./auth.constant.js";
 import type {
@@ -86,12 +86,15 @@ export const authService = {
     );
 
     if (!user) {
-      throw new Error("Invalid email or password");
+      throw new AppError("Invalid email or password", 401);
     }
 
     if (user.status !== "ACTIVE") {
-      throw new Error("Your account is not active");
+      throw new AppError("Your account is not active", 403);
     }
+    if (!user.role.isActive) {
+   throw new AppError("Your assigned role is not active", 403);
+   }
 
     const isPasswordValid = await bcrypt.compare(
       input.password,
@@ -99,17 +102,17 @@ export const authService = {
     );
 
     if (!isPasswordValid) {
-      throw new Error("Invalid email or password");
+      throw new AppError("Invalid email or password", 401);
     }
 
     const refreshToken = generateRefreshToken();
 
-    const session = await authRepository.createSession({
-      userId: user.id,
-      refreshTokenHash: hashRefreshToken(refreshToken),
-      expiresAt: getRefreshTokenExpiry(),
-      ipAddress: metadata.ipAddress,
-      userAgent: metadata.userAgent,
+    const session = await authRepository.createLoginSession({
+       userId: user.id,
+       refreshTokenHash: hashRefreshToken(refreshToken),
+       expiresAt: getRefreshTokenExpiry(),
+       ipAddress: metadata.ipAddress,
+       userAgent: metadata.userAgent,
     });
 
     const accessToken = generateAccessToken({
@@ -126,15 +129,17 @@ export const authService = {
     };
   },
 
-  // Refresh access token and rotate refresh token
+
+  // Refresh access token and rotate refresh token atomically
   async refresh(refreshToken: string): Promise<AuthTokens> {
     if (!refreshToken) {
       throw new Error("Refresh token is required");
     }
 
-    const session = await authRepository.findSessionByRefreshToken(
-      hashRefreshToken(refreshToken)
-    );
+    const currentHash = hashRefreshToken(refreshToken);
+
+    const session =
+      await authRepository.findSessionByRefreshToken(currentHash);
 
     if (!session || session.revokedAt) {
       throw new Error("Invalid refresh token");
@@ -148,19 +153,22 @@ export const authService = {
       throw new Error("Your account is not active");
     }
 
+    if (!session.user.role.isActive) {
+      throw new Error("Your assigned role is not active");
+    }
+
     const newRefreshToken = generateRefreshToken();
 
-    // Create replacement session
-    const newSession = await authRepository.createSession({
-      userId: session.userId,
-      refreshTokenHash: hashRefreshToken(newRefreshToken),
+    const newSession = await authRepository.rotateSession({
+      sessionId: session.id,
+      currentRefreshTokenHash: currentHash,
+      newRefreshTokenHash: hashRefreshToken(newRefreshToken),
       expiresAt: getRefreshTokenExpiry(),
-      ipAddress: session.ipAddress ?? undefined,
-      userAgent: session.userAgent ?? undefined,
     });
 
-    // Revoke previous session
-    await authRepository.revokeSession(session.id);
+    if (!newSession) {
+      throw new Error("Refresh token has already been used or revoked");
+    }
 
     const newAccessToken = generateAccessToken({
       userId: session.userId,
@@ -172,6 +180,7 @@ export const authService = {
       refreshToken: newRefreshToken,
     };
   },
+
 
   // Logout
   async logout(refreshToken?: string): Promise<void> {

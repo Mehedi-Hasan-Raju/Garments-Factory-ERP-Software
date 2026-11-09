@@ -3,6 +3,7 @@ import type { Request, Response, NextFunction } from "express";
 import { authService } from "./auth.service.js";
 import { loginSchema } from "./auth.validation.js";
 import { AUTH_CONSTANTS } from "./auth.constant.js";
+import { generateCsrfToken } from "../../middlewares/csrf.middleware.js";
 
 const ACCESS_COOKIE =
   AUTH_CONSTANTS.COOKIE_NAMES.ACCESS_TOKEN;
@@ -17,24 +18,68 @@ const REFRESH_TOKEN_MAX_AGE =
   60 *
   1000;
 
+
 const isProduction = process.env.NODE_ENV === "production";
+
+const configuredSameSite = (
+  process.env.COOKIE_SAME_SITE || "lax"
+).toLowerCase();
+
+if (!["strict", "lax", "none"].includes(configuredSameSite)) {
+  throw new Error(
+    "Invalid COOKIE_SAME_SITE. Use strict, lax, or none.",
+  );
+}
+
+const sameSite = configuredSameSite as
+  "strict" | "lax" | "none";
+
+const secure =
+  isProduction || process.env.COOKIE_SECURE === "true";
+
+if (sameSite === "none" && !secure) {
+  throw new Error(
+    "COOKIE_SAME_SITE=none requires COOKIE_SECURE=true or production mode.",
+  );
+}
 
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.COOKIE_SECURE === "true",
-  sameSite: process.env.COOKIE_SAME_SITE === "none"
-    ? "none" as const
-    : "lax" as const,
+  secure,
+  sameSite,
   path: "/",
 };
+
 
 const clearAuthCookies = (res: Response): void => {
   res.clearCookie(ACCESS_COOKIE, cookieOptions);
   res.clearCookie(REFRESH_COOKIE, cookieOptions);
 };
 
+
+
+
 export const authController = {
-  
+  async csrfToken(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const csrfToken = generateCsrfToken(req, res);
+
+      res.status(200).json({
+        success: true,
+        message: "CSRF token generated successfully",
+        data: {
+          csrfToken,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async login(
     req: Request,
     res: Response,
@@ -90,7 +135,7 @@ export const authController = {
     }
   },
 
-  // POST /refresh
+  //refresh
   async refresh(
     req: Request,
     res: Response,
@@ -137,7 +182,7 @@ export const authController = {
     }
   },
 
-  // POST /logout
+
   async logout(
     req: Request,
     res: Response,
