@@ -9,7 +9,11 @@ import cookieParser from "cookie-parser";
 import { AppError } from "./lib/app-error.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import { csrfBindingMiddleware } from "./middlewares/csrf.middleware.js";
+
+
 import authRoutes from "./modules/auth/auth.route.js";
+import userRoutes from "./modules/users/user.route.js";
+
 
 const app = express();
 
@@ -63,7 +67,7 @@ const apiLimiter = rateLimit({
 
 app.use("/api", apiLimiter);
 app.use("/api/v1/auth", authRoutes);
-
+app.use("/api/v1/users", userRoutes);
 
 
 
