@@ -193,6 +193,11 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "products.delete",
 
     "suppliers.view",
+    "suppliers.create",   
+    "suppliers.update",
+    "suppliers.delete",
+    "suppliers.approve",
+
     "purchase_orders.view",
 
     "buying_houses.view",

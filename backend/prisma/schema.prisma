@@ -51,6 +51,7 @@ enum StockMovementType {
   TRANSFER
   ADJUSTMENT
 }
+
 enum SupplierType {
   MANUFACTURER
   DISTRIBUTOR
@@ -69,7 +70,6 @@ enum RawMaterialType {
   PACKAGING
   OTHER
 }
-
 
 model Department {
   id          String  @id @default(uuid()) @db.Uuid
@@ -502,4 +502,30 @@ model StockMovement {
   @@index([toLocationId])
   @@index([createdById])
   @@index([referenceNo])
+}
+
+model Supplier {
+  id            String  @id @default(uuid()) @db.Uuid
+  supplierCode  String  @unique @db.VarChar(50)
+  supplierName  String  @db.VarChar(150)
+  companyName   String  @db.VarChar(150)
+  contactPerson String? @db.VarChar(120)
+  phone         String  @db.VarChar(30)
+  email         String? @db.VarChar(150)
+  address       String? @db.Text
+
+  supplierType     SupplierType
+  rawMaterialTypes RawMaterialType[] @default([])
+
+  notes    String? @db.Text
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([supplierName])
+  @@index([companyName])
+  @@index([phone])
+  @@index([supplierType, isActive])
+  @@index([isActive])
 }
