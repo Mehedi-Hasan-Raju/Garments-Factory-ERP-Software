@@ -19,6 +19,8 @@ import employeeRoutes from "./modules/employees/employee.route.js";
 import salaryComponentRoutes from "./modules/salary-components/salary-component.route.js";
 import payrollRoutes from "./modules/payrolls/payroll.route.js";
 import productCategoryRoutes from "./modules/product-categories/product-category.route.js";
+import unitRoutes from "./modules/units/unit.route.js";
+
 
 
 const app = express();
@@ -81,6 +83,11 @@ app.use("/api/v1/employees", employeeRoutes);
 app.use("/api/v1/salary-components", salaryComponentRoutes);
 app.use("/api/v1/payrolls", payrollRoutes);
 app.use("/api/v1/product-categories", productCategoryRoutes);
+app.use("/api/v1/units", unitRoutes);
+
+
+
+
 
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({

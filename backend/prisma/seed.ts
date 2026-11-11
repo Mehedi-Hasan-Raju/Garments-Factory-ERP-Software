@@ -94,6 +94,7 @@ const modules = [
   "salary_components",
   "payrolls",
   "product_categories",
+  "units",
 ];
 
 const actions = [
@@ -131,7 +132,8 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "warehouse_locations.create",
     "warehouse_locations.update",
     "warehouse_locations.delete",
-
+     
+    "units.view",
     "products.view",
     "inventory.view",
     "stock_history.view",
@@ -179,6 +181,11 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "stock_count.update",
 
     "stock_history.view",
+
+    "units.view",
+    "units.create",
+    "units.update",
+    "units.delete",
 
     "suppliers.view",
     "purchase_orders.view",
@@ -310,6 +317,8 @@ const permissionGrants: Record<string, PermissionCode[]> = {
 
     "products.view",
     "inventory.view",
+    "units.view",
+    "units.update",
 
     "stock_receive.view",
     "stock_receive.create",
