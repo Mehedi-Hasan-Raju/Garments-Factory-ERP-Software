@@ -13,11 +13,12 @@ import { csrfBindingMiddleware } from "./middlewares/csrf.middleware.js";
 
 import authRoutes from "./modules/auth/auth.route.js";
 import userRoutes from "./modules/users/user.route.js";
-
-
+import departmentRoutes from "./modules/departments/department.route.js";
+import warehouseRoutes from "./modules/warehouses/warehouse.route.js";
+import warehouseLocationRoutes from "./modules/warehouse-locations/warehouse-location.route.js";
 const app = express();
+ 
 
-// Cookie parser
 app.use(cookieParser());
 app.use(csrfBindingMiddleware);
 
@@ -68,10 +69,11 @@ const apiLimiter = rateLimit({
 app.use("/api", apiLimiter);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/departments", departmentRoutes);
+app.use("/api/v1/warehouses", warehouseRoutes);
+app.use("/api/v1/warehouse-locations",warehouseLocationRoutes,);
 
 
-
-// Health check
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({
     success: true,
@@ -85,7 +87,7 @@ app.use((_req, _res, next) => {
   next(new AppError("API endpoint not found", 404));
 });
 
-// Global error handler
+
 app.use(globalErrorHandler);
 
 export default app;
