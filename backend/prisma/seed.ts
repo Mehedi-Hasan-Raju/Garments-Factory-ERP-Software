@@ -93,6 +93,7 @@ const modules = [
   "salaries",
   "salary_components",
   "payrolls",
+  "product_categories",
 ];
 
 const actions = [
@@ -184,6 +185,11 @@ const permissionGrants: Record<string, PermissionCode[]> = {
 
     "buying_houses.view",
     "buyers.view",
+    
+    "product_categories.view",
+    "product_categories.create",
+    "product_categories.update",
+    "product_categories.delete",
 
     "production_orders.view",
     "production_orders.create",

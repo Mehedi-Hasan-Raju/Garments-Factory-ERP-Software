@@ -335,3 +335,57 @@ model PayrollItemComponent {
   @@index([payrollItemId])
   @@index([componentId])
 }
+
+model ProductCategory {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(100)
+  code        String  @unique @db.VarChar(30)
+  description String? @db.Text
+  isActive    Boolean @default(true)
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+  @@index([name])
+}
+
+model UnitOfMeasure {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(50)
+  code        String  @unique @db.VarChar(20)
+  description String? @db.Text
+  isActive    Boolean @default(true)
+
+  products Product[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive])
+}
+
+model Product {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @db.VarChar(150)
+  sku         String  @unique @db.VarChar(80)
+  description String? @db.Text
+
+  categoryId String          @db.Uuid
+  category   ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  unitId String        @db.Uuid
+  unit   UnitOfMeasure @relation(fields: [unitId], references: [id], onDelete: Restrict)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([categoryId, isActive])
+  @@index([unitId])
+  @@index([isActive])
+}
