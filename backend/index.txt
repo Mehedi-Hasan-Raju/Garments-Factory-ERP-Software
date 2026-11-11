@@ -1,3 +1,6 @@
 "email": "admin@factory.com",
-  "password": "admin1234567",
-  "roleCode": "ADMIN"
+"password": "admin1234567",
+"roleCode": "ADMIN"
+
+OWNER_EMAIL="admin@garments.local"
+OWNER_PASSWORD="OWNER1234567"

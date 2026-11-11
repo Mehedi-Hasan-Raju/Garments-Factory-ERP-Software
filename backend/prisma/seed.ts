@@ -187,6 +187,11 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "units.update",
     "units.delete",
 
+    "products.view",
+    "products.create",
+    "products.update",
+    "products.delete",
+
     "suppliers.view",
     "purchase_orders.view",
 
@@ -239,6 +244,8 @@ const permissionGrants: Record<string, PermissionCode[]> = {
 
     "cutting.view",
     "cutting.update",
+
+    "products.view",
 
     "sewing.view",
     "sewing.update",

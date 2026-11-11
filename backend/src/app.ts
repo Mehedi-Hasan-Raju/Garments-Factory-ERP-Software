@@ -20,8 +20,8 @@ import salaryComponentRoutes from "./modules/salary-components/salary-component.
 import payrollRoutes from "./modules/payrolls/payroll.route.js";
 import productCategoryRoutes from "./modules/product-categories/product-category.route.js";
 import unitRoutes from "./modules/units/unit.route.js";
-
-
+import productRoutes from "./modules/products/product.route.js";
+import inventoryRoutes from "./modules/inventory/inventory.route.js";
 
 const app = express();
  
@@ -84,8 +84,8 @@ app.use("/api/v1/salary-components", salaryComponentRoutes);
 app.use("/api/v1/payrolls", payrollRoutes);
 app.use("/api/v1/product-categories", productCategoryRoutes);
 app.use("/api/v1/units", unitRoutes);
-
-
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/inventory", inventoryRoutes);
 
 
 
