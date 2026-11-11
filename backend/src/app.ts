@@ -16,6 +16,10 @@ import userRoutes from "./modules/users/user.route.js";
 import departmentRoutes from "./modules/departments/department.route.js";
 import warehouseRoutes from "./modules/warehouses/warehouse.route.js";
 import warehouseLocationRoutes from "./modules/warehouse-locations/warehouse-location.route.js";
+import employeeRoutes from "./modules/employees/employee.route.js";
+import salaryComponentRoutes from "./modules/salary-components/salary-component.route.js";
+import payrollRoutes from "./modules/payrolls/payroll.route.js";
+
 const app = express();
  
 
@@ -71,7 +75,10 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/departments", departmentRoutes);
 app.use("/api/v1/warehouses", warehouseRoutes);
-app.use("/api/v1/warehouse-locations",warehouseLocationRoutes,);
+app.use("/api/v1/warehouse-locations",warehouseLocationRoutes);
+app.use("/api/v1/employees", employeeRoutes);
+app.use("/api/v1/salary-components", salaryComponentRoutes);
+app.use("/api/v1/payrolls", payrollRoutes);
 
 
 app.get("/api/v1/health", (_req, res) => {

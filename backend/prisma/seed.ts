@@ -90,6 +90,9 @@ const modules = [
   "notifications",
   "settings",
   "tasks",
+  "salaries",
+  "salary_components",
+  "payrolls",
 ];
 
 const actions = [
@@ -237,9 +240,30 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "tasks.update",
   ],
 
-  ACCOUNTANT: [
+    ACCOUNTANT: [
     "dashboard.view",
 
+    
+    "employees.view",
+
+    
+    "salaries.view",
+    "salaries.create",
+    "salaries.update",
+
+    
+    "salary_components.view",
+    "salary_components.create",
+    "salary_components.update",
+
+    
+    "payrolls.view",
+    "payrolls.create",
+    "payrolls.update",
+    "payrolls.approve",
+    "payrolls.pay",
+
+  
     "finance.view",
 
     "income.view",
@@ -250,22 +274,23 @@ const permissionGrants: Record<string, PermissionCode[]> = {
     "expenses.create",
     "expenses.update",
 
-    "salaries.view",
-    "salaries.create",
-    "salaries.update",
-
+    
     "supplier_payments.view",
     "supplier_payments.create",
     "supplier_payments.update",
 
+    
     "suppliers.view",
     "purchase_orders.view",
 
+    
     "buying_houses.view",
     "buyers.view",
 
+    
     "production_orders.view",
 
+    
     "reports.view",
 
     "notifications.view",
@@ -408,14 +433,24 @@ async function seed() {
 
     console.log("Seeding permissions...");
 
-    const permissionRecords = modules.flatMap((module) =>
-      actions.map((action) => ({
-        name: `${module.replaceAll("_", " ")} ${action}`,
-        code: `${module}.${action}`,
-        module,
-        description: `Allows ${action} access for ${module}`,
-      }))
-    );
+    const permissionRecords = [
+  ...modules.flatMap((module) =>
+    actions.map((action) => ({
+      name: `${module.replaceAll("_", " ")} ${action}`,
+      code: `${module}.${action}`,
+      module,
+      description: `Allows ${action} access for ${module}`,
+    }))
+  ),
+
+  // Special payroll permission
+  {
+    name: "Payroll pay",
+    code: "payrolls.pay",
+    module: "payrolls",
+    description: "Allows marking approved payroll as paid",
+  },
+];
 
     for (const permission of permissionRecords) {
       await tx.permission.upsert({
