@@ -23,7 +23,7 @@ import unitRoutes from "./modules/units/unit.route.js";
 import productRoutes from "./modules/products/product.route.js";
 import inventoryRoutes from "./modules/inventory/inventory.route.js";
 import supplierRoutes from "./modules/suppliers/supplier.route.js";
-
+import purchaseOrderRoutes from "./modules/purchase-orders/purchase-order.route.js";
 
 const app = express();
  
@@ -89,6 +89,9 @@ app.use("/api/v1/units", unitRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/inventory", inventoryRoutes);
 app.use("/api/v1/suppliers", supplierRoutes);
+app.use("/api/v1/purchase-orders", purchaseOrderRoutes);
+
+
 
 
 app.get("/api/v1/health", (_req, res) => {

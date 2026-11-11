@@ -1,4 +1,3 @@
-
 import { Router } from "express";
 
 import {
@@ -12,7 +11,7 @@ import { departmentController } from "./department.controller.js";
 
 const router = Router();
 
-// Get all departments
+
 router.get(
   "/",
   authenticate,
@@ -20,7 +19,6 @@ router.get(
   departmentController.findAll,
 );
 
-// Get department by ID
 router.get(
   "/:id",
   authenticate,
@@ -28,7 +26,7 @@ router.get(
   departmentController.findById,
 );
 
-// Create department
+
 router.post(
   "/",
   authenticate,
@@ -37,7 +35,7 @@ router.post(
   departmentController.create,
 );
 
-// Update department
+
 router.patch(
   "/:id",
   authenticate,
@@ -55,7 +53,7 @@ router.patch(
   departmentController.updateStatus,
 );
 
-// Delete department
+
 router.delete(
   "/:id",
   authenticate,
