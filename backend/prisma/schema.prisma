@@ -773,6 +773,9 @@ model ProductionOrder {
 
   product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 
+  cuttingEntries CuttingEntry[]
+  sewingEntries  SewingEntry[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -782,5 +785,60 @@ model ProductionOrder {
   @@index([status, deliveryDate])
   @@index([orderDate])
   @@index([deliveryDate])
+  @@index([createdById])
+}
+
+model CuttingEntry {
+  id String @id @default(uuid()) @db.Uuid
+
+  cuttingNumber String @unique @db.VarChar(50)
+
+  productionOrderId String @db.Uuid
+
+  cuttingDate DateTime @default(now())
+
+  cuttingQuantity Decimal @db.Decimal(18, 3)
+
+  fabricConsumed     Decimal @default(0) @db.Decimal(18, 3)
+  fabricConsumedUnit String  @default("KG") @db.VarChar(20)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionOrderId])
+  @@index([cuttingDate])
+  @@index([createdById])
+}
+
+model SewingEntry {
+  id String @id @default(uuid()) @db.Uuid
+
+  sewingNumber String @unique @db.VarChar(50)
+
+  productionOrderId String @db.Uuid
+
+  sewingDate DateTime @default(now())
+
+  sewingLine String? @db.VarChar(100)
+
+  sewingQuantity Decimal @db.Decimal(18, 3)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionOrderId])
+  @@index([sewingDate])
   @@index([createdById])
 }

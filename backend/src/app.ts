@@ -27,6 +27,9 @@ import purchaseOrderRoutes from "./modules/purchase-orders/purchase-order.route.
 import buyingHouseRoutes from "./modules/buying-houses/buying-house.route.js";
 import buyerRoutes from "./modules/buyers/buyer.route.js";
 import productionOrderRoutes from "./modules/production-orders/production-order.route.js";
+import cuttingRoutes from "./modules/cutting/cutting.route.js";
+import sewingRoutes from "./modules/sewing/sewing.route.js";
+
 
 const app = express();
  
@@ -96,8 +99,8 @@ app.use("/api/v1/purchase-orders", purchaseOrderRoutes);
 app.use("/api/v1/buying-houses", buyingHouseRoutes);
 app.use("/api/v1/buyers", buyerRoutes);
 app.use("/api/v1/production-orders", productionOrderRoutes);
-
-
+app.use("/api/v1/cutting", cuttingRoutes);
+app.use("/api/v1/sewing", sewingRoutes);
 
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({
