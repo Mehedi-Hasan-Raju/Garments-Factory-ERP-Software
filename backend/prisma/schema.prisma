@@ -90,6 +90,22 @@ enum ShipmentStatus {
   DELIVERED
 }
 
+enum QCDefectSeverity {
+  MINOR
+  MAJOR
+  CRITICAL
+}
+
+enum FinishedGoodsMovementType {
+  RECEIPT
+  RESERVATION
+  RELEASE
+  SHIPMENT
+  ADJUSTMENT
+  TRANSFER_IN
+  TRANSFER_OUT
+}
+
 model Department {
   id          String  @id @default(uuid()) @db.Uuid
   name        String  @unique @db.VarChar(100)
@@ -124,6 +140,14 @@ enum SupplierPaymentMethod {
 
 enum SupplierPaymentStatus {
   COMPLETED
+  CANCELLED
+}
+
+enum ShipmentRecordStatus {
+  PLANNED
+  READY
+  DISPATCHED
+  DELIVERED
   CANCELLED
 }
 
@@ -181,8 +205,11 @@ model User {
   employeeId String?   @unique @db.Uuid
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
 
-  lastLoginAt DateTime?
-  sessions    UserSession[]
+  lastLoginAt               DateTime?
+  sessions                  UserSession[]
+  createdQCInspections      QCInspection[]          @relation("QCInspectionCreatedBy")
+  createdFinishedGoods      FinishedGoodsEntry[]    @relation("FinishedGoodsCreatedBy")
+  createdFinishedGoodsMoves FinishedGoodsMovement[] @relation("FinishedGoodsMovementCreatedBy")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -216,8 +243,9 @@ model Warehouse {
   description String? @db.Text
   isActive    Boolean @default(true)
 
-  locations      WarehouseLocation[]
-  purchaseOrders PurchaseOrder[]
+  locations            WarehouseLocation[]
+  purchaseOrders       PurchaseOrder[]
+  finishedGoodsEntries FinishedGoodsEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -239,9 +267,10 @@ model WarehouseLocation {
   parent   WarehouseLocation?  @relation("LocationHierarchy", fields: [parentId, warehouseId], references: [id, warehouseId], onDelete: Restrict)
   children WarehouseLocation[] @relation("LocationHierarchy")
 
-  inventoryStocks    InventoryStock[]
-  stockMovementsFrom StockMovement[]  @relation("StockMovementFrom")
-  stockMovementsTo   StockMovement[]  @relation("StockMovementTo")
+  inventoryStocks      InventoryStock[]
+  stockMovementsFrom   StockMovement[]      @relation("StockMovementFrom")
+  stockMovementsTo     StockMovement[]      @relation("StockMovementTo")
+  finishedGoodsEntries FinishedGoodsEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -773,8 +802,10 @@ model ProductionOrder {
 
   product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
 
-  cuttingEntries CuttingEntry[]
-  sewingEntries  SewingEntry[]
+  cuttingEntries       CuttingEntry[]
+  sewingEntries        SewingEntry[]
+  qcInspections        QCInspection[]
+  finishedGoodsEntries FinishedGoodsEntry[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -840,5 +871,141 @@ model SewingEntry {
 
   @@index([productionOrderId])
   @@index([sewingDate])
+  @@index([createdById])
+}
+
+model QCInspection {
+  id String @id @default(uuid()) @db.Uuid
+
+  qcNumber String @unique @db.VarChar(50)
+
+  productionOrderId String @db.Uuid
+
+  inspectionDate DateTime @default(now())
+
+  inspectedQuantity Decimal @db.Decimal(18, 3)
+
+  passedQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  rejectedQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  reworkQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+
+  createdBy User @relation("QCInspectionCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  defects QCDefect[]
+
+  finishedGoodsEntry FinishedGoodsEntry?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionOrderId])
+  @@index([inspectionDate])
+  @@index([createdById])
+}
+
+model QCDefect {
+  id String @id @default(uuid()) @db.Uuid
+
+  qcInspectionId String @db.Uuid
+
+  defectType String @db.VarChar(100)
+
+  severity QCDefectSeverity @default(MINOR)
+
+  defectQuantity Decimal @db.Decimal(18, 3)
+
+  notes String? @db.Text
+
+  qcInspection QCInspection @relation(fields: [qcInspectionId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([qcInspectionId])
+  @@index([defectType])
+  @@index([severity])
+}
+
+model FinishedGoodsEntry {
+  id String @id @default(uuid()) @db.Uuid
+
+  finishedGoodsNumber String @unique @db.VarChar(50)
+
+  productionOrderId String @db.Uuid
+
+  qcInspectionId String @unique @db.Uuid
+
+  warehouseId String @db.Uuid
+
+  warehouseLocationId String? @db.Uuid
+
+  receivedDate DateTime @default(now())
+
+  quantity Decimal @db.Decimal(18, 3)
+
+  availableQuantity Decimal @db.Decimal(18, 3)
+
+  reservedQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  shippedQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+
+  qcInspection QCInspection @relation(fields: [qcInspectionId], references: [id], onDelete: Restrict)
+
+  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+
+  warehouseLocation WarehouseLocation? @relation(fields: [warehouseLocationId], references: [id], onDelete: Restrict)
+
+  createdBy User @relation("FinishedGoodsCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  movements FinishedGoodsMovement[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionOrderId])
+  @@index([warehouseId])
+  @@index([warehouseLocationId])
+  @@index([receivedDate])
+  @@index([createdById])
+}
+
+model FinishedGoodsMovement {
+  id String @id @default(uuid()) @db.Uuid
+
+  finishedGoodsEntryId String @db.Uuid
+
+  movementType FinishedGoodsMovementType
+
+  quantity Decimal @db.Decimal(18, 3)
+
+  referenceNumber String? @db.VarChar(100)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  finishedGoodsEntry FinishedGoodsEntry @relation(fields: [finishedGoodsEntryId], references: [id], onDelete: Restrict)
+
+  createdBy User @relation("FinishedGoodsMovementCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([finishedGoodsEntryId])
+  @@index([movementType])
+  @@index([createdAt])
   @@index([createdById])
 }
