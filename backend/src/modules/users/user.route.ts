@@ -1,10 +1,8 @@
 
 import { Router } from "express";
 
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 
 import {
   doubleCsrfProtection,
@@ -18,7 +16,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("users.create"),
+  allowRoles("OWNER", "ADMIN", "MANAGER"),
   userController.createUser,
 );
 

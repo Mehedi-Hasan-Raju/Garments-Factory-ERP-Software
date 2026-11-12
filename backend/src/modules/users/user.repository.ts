@@ -2,7 +2,7 @@
 import { prisma } from "../../lib/prisma.js";
 
 export const userRepository = {
-  // Find creator with current role and permissions
+  // Find creator with current role
   findCreatorById(userId: string) {
     return prisma.user.findUnique({
       where: {
@@ -10,16 +10,11 @@ export const userRepository = {
       },
       include: {
         role: {
-          include: {
-            permissions: {
-              include: {
-                permission: {
-                  select: {
-                    code: true,
-                  },
-                },
-              },
-            },
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            isActive: true,
           },
         },
       },

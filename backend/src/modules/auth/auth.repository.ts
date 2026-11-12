@@ -3,22 +3,17 @@ import { prisma } from "../../lib/prisma.js";
 
 const userAuthInclude = {
   role: {
-    include: {
-      permissions: {
-        include: {
-          permission: {
-            select: {
-              code: true,
-            },
-          },
-        },
-      },
+    select: {
+      id: true,
+      name: true,
+      code: true,
+      isActive: true,
     },
   },
 } as const;
 
 export const authRepository = {
-  // Find user by email with role and permissions
+  // Find user by email with role information
   findUserByEmail(email: string) {
     return prisma.user.findUnique({
       where: { email },
@@ -26,7 +21,7 @@ export const authRepository = {
     });
   },
 
-  // Find user by ID with role and permissions
+  // Find user by ID with role information
   findUserById(userId: string) {
     return prisma.user.findUnique({
       where: { id: userId },

@@ -24,6 +24,7 @@ import productRoutes from "./modules/products/product.route.js";
 import inventoryRoutes from "./modules/inventory/inventory.route.js";
 import supplierRoutes from "./modules/suppliers/supplier.route.js";
 import purchaseOrderRoutes from "./modules/purchase-orders/purchase-order.route.js";
+import buyingHouseRoutes from "./modules/buying-houses/buying-house.route.js";
 
 const app = express();
  
@@ -31,10 +32,10 @@ const app = express();
 app.use(cookieParser());
 app.use(csrfBindingMiddleware);
 
-// Security middleware
+
 app.use(helmet());
 
-// CORS configuration
+
 app.use(
   cors({
     origin: process.env.CLIENT_URL || "http://localhost:3000",
@@ -90,7 +91,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/inventory", inventoryRoutes);
 app.use("/api/v1/suppliers", supplierRoutes);
 app.use("/api/v1/purchase-orders", purchaseOrderRoutes);
-
+app.use("/api/v1/buying-houses", buyingHouseRoutes);
 
 
 

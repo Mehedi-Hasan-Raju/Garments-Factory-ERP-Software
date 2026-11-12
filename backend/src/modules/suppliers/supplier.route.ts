@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { supplierController } from "./supplier.controller.js";
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -12,34 +10,34 @@ router.use(authenticate);
 
 router.get(
   "/",
-  requirePermission("suppliers.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"),
   supplierController.findAll,
 );
 
 router.get(
   "/:id",
-  requirePermission("suppliers.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"),
   supplierController.findById,
 );
 
 router.post(
   "/",
   doubleCsrfProtection,
-  requirePermission("suppliers.create"),
+  allowRoles("OWNER", "MANAGER"),
   supplierController.create,
 );
 
 router.patch(
   "/:id",
   doubleCsrfProtection,
-  requirePermission("suppliers.update"),
+  allowRoles("OWNER", "MANAGER"),
   supplierController.update,
 );
 
 router.delete(
   "/:id",
   doubleCsrfProtection,
-  requirePermission("suppliers.delete"),
+  allowRoles("OWNER", "MANAGER"),
   supplierController.deactivate,
 );
 

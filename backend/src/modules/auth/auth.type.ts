@@ -11,7 +11,6 @@ export interface AuthenticatedUser {
     id: string;
     name: string;
     code: string;
-    permissions: string[];
   };
 }
 

@@ -1,8 +1,6 @@
 import { Router } from "express";
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 import { employeeController } from "./employee.controller.js";
 import { employeeSalaryController } from "./employee-salary.controller.js";
@@ -13,14 +11,14 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("employees.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"),
   employeeController.findAll
 );
 
 router.get(
   "/:id/salaries",
   authenticate,
-  requirePermission("employees.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"),
   employeeSalaryController.findHistory
 );
 
@@ -28,14 +26,14 @@ router.post(
   "/:id/salaries",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("employees.update"),
+  allowRoles("OWNER", "MANAGER"),
   employeeSalaryController.assign
 );
 
 router.get(
   "/:id",
   authenticate,
-  requirePermission("employees.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"),
   employeeController.findById
 );
 
@@ -43,7 +41,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("employees.create"),
+  allowRoles("OWNER", "MANAGER"),
   employeeController.create
 );
 
@@ -51,7 +49,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("employees.update"),
+  allowRoles("OWNER", "MANAGER"),
   employeeController.update
 );
 
@@ -59,7 +57,7 @@ router.patch(
   "/:id/status",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("employees.update"),
+  allowRoles("OWNER", "MANAGER"),
   employeeController.updateStatus
 );
 
@@ -67,7 +65,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("employees.delete"),
+  allowRoles("OWNER"),
   employeeController.delete
 );
 

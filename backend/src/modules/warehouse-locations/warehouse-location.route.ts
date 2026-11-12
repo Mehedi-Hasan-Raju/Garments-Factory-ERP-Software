@@ -1,28 +1,27 @@
 
 import { Router } from "express";
 
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 import { warehouseLocationController } from "./warehouse-location.controller.js";
+
 
 const router = Router();
 
 router.get(
   "/",
   authenticate,
-  requirePermission("warehouse_locations.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   warehouseLocationController.findAll,
 );
 
 router.get(
   "/:id",
   authenticate,
-  requirePermission("warehouse_locations.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   warehouseLocationController.findById,
 );
 
@@ -30,7 +29,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouse_locations.create"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseLocationController.create,
 );
 
@@ -38,7 +37,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouse_locations.update"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseLocationController.update,
 );
 
@@ -46,7 +45,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouse_locations.delete"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseLocationController.delete,
 );
 

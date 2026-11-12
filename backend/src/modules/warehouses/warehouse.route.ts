@@ -1,10 +1,8 @@
 
 import { Router } from "express";
 
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
@@ -16,7 +14,7 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("warehouses.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   warehouseController.findAll,
 );
 
@@ -24,7 +22,7 @@ router.get(
 router.get(
   "/:id",
   authenticate,
-  requirePermission("warehouses.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   warehouseController.findById,
 );
 
@@ -33,7 +31,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouses.create"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseController.create,
 );
 
@@ -42,7 +40,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouses.update"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseController.update,
 );
 
@@ -51,7 +49,7 @@ router.patch(
   "/:id/status",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouses.update"),
+  allowRoles("OWNER", "ADMIN"),
   warehouseController.updateStatus,
 );
 
@@ -60,7 +58,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("warehouses.delete"),
+  allowRoles("OWNER"),
   warehouseController.delete,
 );
 

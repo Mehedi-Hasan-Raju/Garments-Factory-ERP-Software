@@ -142,8 +142,7 @@ model Role {
   isSystem    Boolean @default(false)
   isActive    Boolean @default(true)
 
-  users       User[]
-  permissions RolePermission[]
+  users User[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,33 +150,7 @@ model Role {
   @@index([isActive])
 }
 
-model Permission {
-  id          String  @id @default(uuid()) @db.Uuid
-  name        String  @db.VarChar(100)
-  code        String  @unique @db.VarChar(120)
-  module      String  @db.VarChar(80)
-  description String? @db.Text
 
-  roles RolePermission[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([module])
-}
-
-model RolePermission {
-  roleId       String @db.Uuid
-  permissionId String @db.Uuid
-
-  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
-  @@id([roleId, permissionId])
-  @@index([permissionId])
-}
 
 model User {
   id           String     @id @default(uuid()) @db.Uuid

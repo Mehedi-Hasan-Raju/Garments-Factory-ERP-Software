@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { productCategoryController } from "./product-category.controller.js";
-import { authenticate, requirePermission } from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -8,14 +9,14 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("product_categories.view"),
+  allowRoles("OWNER", "MANAGER"),
   productCategoryController.findAll,
 );
 
 router.get(
   "/:id",
   authenticate,
-  requirePermission("product_categories.view"),
+  allowRoles("OWNER", "MANAGER"),
   productCategoryController.findById,
 );
 
@@ -23,7 +24,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("product_categories.create"),
+  allowRoles("OWNER", "MANAGER"),
   productCategoryController.create,
 );
 
@@ -31,7 +32,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("product_categories.update"),
+  allowRoles("OWNER", "MANAGER"),
   productCategoryController.update,
 );
 
@@ -39,7 +40,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("product_categories.delete"),
+  allowRoles("OWNER", "MANAGER"),
   productCategoryController.delete,
 );
 

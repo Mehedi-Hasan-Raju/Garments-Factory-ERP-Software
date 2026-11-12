@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { unitController } from "./unit.controller.js";
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -11,14 +9,14 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("units.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   unitController.findAll,
 );
 
 router.get(
   "/:id",
   authenticate,
-  requirePermission("units.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   unitController.findById,
 );
 
@@ -26,7 +24,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("units.create"),
+  allowRoles("OWNER", "MANAGER"),
   unitController.create,
 );
 
@@ -34,7 +32,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("units.update"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   unitController.update,
 );
 
@@ -42,7 +40,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("units.delete"),
+  allowRoles("OWNER", "MANAGER"),
   unitController.delete,
 );
 

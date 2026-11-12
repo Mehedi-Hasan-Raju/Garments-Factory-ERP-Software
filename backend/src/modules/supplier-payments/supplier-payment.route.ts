@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-import { authenticate, requirePermission } from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { supplierPaymentController } from "./supplier-payment.controller.js";
 
 const router = Router();
@@ -10,41 +11,41 @@ router.use(authenticate);
 
 router.get(
   "/",
-  requirePermission("supplier_payments.view"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   supplierPaymentController.list,
 );
 
 
 router.get(
   "/supplier/:supplierId/summary",
-  requirePermission("supplier_payments.view"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   supplierPaymentController.getSupplierSummary,
 );
  
 router.post(
   "/",
-  requirePermission("supplier_payments.create"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   supplierPaymentController.create,
 );
 
 
 router.get(
   "/:id",
-  requirePermission("supplier_payments.view"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   supplierPaymentController.getById,
 );
 
 
 router.post(
   "/:id/allocations",
-  requirePermission("supplier_payments.create"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   supplierPaymentController.allocate,
 );
 
 
 router.patch(
   "/:id/cancel",
-  requirePermission("supplier_payments.cancel"),
+  allowRoles("OWNER"),
   supplierPaymentController.cancel,
 );
 

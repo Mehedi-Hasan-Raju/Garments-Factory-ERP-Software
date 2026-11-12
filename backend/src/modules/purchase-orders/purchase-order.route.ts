@@ -1,6 +1,7 @@
 import { Router } from "express";
 
-import { authenticate, requirePermission } from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { purchaseOrderController } from "./purchase-order.controller.js";
 
 const router = Router();
@@ -10,56 +11,56 @@ router.use(authenticate);
 
 router.post(
   "/",
-  requirePermission("purchase_orders.create"),
+  allowRoles("OWNER"),
   purchaseOrderController.create,
 );
 
 
 router.get(
   "/",
-  requirePermission("purchase_orders.view"),
+  allowRoles("OWNER", "MANAGER", "ACCOUNTANT"),
   purchaseOrderController.findMany,
 );
 
 
 router.get(
   "/:id",
-  requirePermission("purchase_orders.view"),
+  allowRoles("OWNER", "MANAGER", "ACCOUNTANT"),
   purchaseOrderController.findById,
 );
 
 
 router.patch(
   "/:id",
-  requirePermission("purchase_orders.update"),
+  allowRoles("OWNER"),
   purchaseOrderController.update,
 );
 
 
 router.patch(
   "/:id/submit",
-  requirePermission("purchase_orders.update"),
+  allowRoles("OWNER"),
   purchaseOrderController.submit,
 );
 
 
 router.patch(
   "/:id/approve",
-  requirePermission("purchase_orders.approve"),
+  allowRoles("OWNER"),
   purchaseOrderController.approve,
 );
 
 
 router.patch(
   "/:id/cancel",
-  requirePermission("purchase_orders.update"),
+  allowRoles("OWNER"),
   purchaseOrderController.cancel,
 );
 
 
 router.post(
   "/:id/receive",
-  requirePermission("stock_receive.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   purchaseOrderController.receive,
 );
 

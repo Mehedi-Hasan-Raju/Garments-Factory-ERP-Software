@@ -33,7 +33,7 @@ export const userService = {
     tokenRoleCode: string,
     input: CreateUserInput,
   ) {
-    // 1. Find creator from database
+    
     const creator =
       await userRepository.findCreatorById(creatorId);
 
@@ -44,7 +44,7 @@ export const userService = {
       );
     }
 
-    // 2. Check creator account status
+    
     if (creator.status !== "ACTIVE") {
       throw new AppError(
         "Your account is not active",
@@ -52,7 +52,7 @@ export const userService = {
       );
     }
 
-    // 3. Check whether creator's role is active
+    
     if (!creator.role.isActive) {
       throw new AppError(
         "Your assigned role is not active",
@@ -60,7 +60,7 @@ export const userService = {
       );
     }
 
-    // 4. Verify token role against current database role
+    
     if (creator.role.code !== tokenRoleCode) {
       throw new AppError(
         "Your role has changed. Please login again",
@@ -68,21 +68,8 @@ export const userService = {
       );
     }
 
-    // 5. Verify current database permission
-    const hasCreatePermission =
-      creator.role.permissions.some(
-        (item) =>
-          item.permission.code === "users.create",
-      );
-
-    if (!hasCreatePermission) {
-      throw new AppError(
-        "You do not have permission to create users",
-        403,
-      );
-    }
-
-    // 6. Check role creation hierarchy
+   
+   
     const allowedRoles =
       ROLE_CREATION_RULES[creator.role.code] || [];
 
@@ -93,7 +80,7 @@ export const userService = {
       );
     }
 
-    // 7. Find requested role
+   
     const targetRole =
       await userRepository.findRoleByCode(
         input.roleCode,
@@ -106,7 +93,7 @@ export const userService = {
       );
     }
 
-    // 8. Check duplicate email
+   
     const existingUser =
       await userRepository.findUserByEmail(
         input.email,
@@ -119,13 +106,13 @@ export const userService = {
       );
     }
 
-    // 9. Hash password
+    
     const passwordHash = await bcrypt.hash(
       input.password,
       AUTH_CONSTANTS.BCRYPT_SALT_ROUNDS,
     );
 
-    // 10. Create user
+   
     try {
       const user = await userRepository.createUser({
         email: input.email,
@@ -135,7 +122,7 @@ export const userService = {
 
       return user;
     } catch (error) {
-      // Handle duplicate email race condition
+    
       if (
         typeof error === "object" &&
         error !== null &&

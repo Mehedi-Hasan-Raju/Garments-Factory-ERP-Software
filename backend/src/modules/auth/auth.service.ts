@@ -41,9 +41,6 @@ const formatUser = (user: NonNullable<
       id: user.role.id,
       name: user.role.name,
       code: user.role.code,
-      permissions: user.role.permissions.map(
-        (item) => item.permission.code
-      ),
     },
   };
 };
@@ -228,6 +225,10 @@ async authenticateAccessToken(token: string): Promise<{
 
   if (session.user.status !== "ACTIVE") {
     throw new Error("User account is not active");
+  }
+
+  if (!session.user.role.isActive) {
+    throw new Error("Your assigned role is not active");
   }
 
   return {

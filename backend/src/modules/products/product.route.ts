@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { productController } from "./product.controller.js";
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -11,14 +9,14 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("products.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "EMPLOYEE", "STOREKEEPER"),
   productController.findAll,
 );
 
 router.get(
   "/:id",
   authenticate,
-  requirePermission("products.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "EMPLOYEE", "STOREKEEPER"),
   productController.findById,
 );
 
@@ -26,7 +24,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("products.create"),
+  allowRoles("OWNER", "MANAGER"),
   productController.create,
 );
 
@@ -34,7 +32,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("products.update"),
+  allowRoles("OWNER", "MANAGER"),
   productController.update,
 );
 
@@ -42,7 +40,7 @@ router.delete(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("products.delete"),
+  allowRoles("OWNER", "MANAGER"),
   productController.delete,
 );
 

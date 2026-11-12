@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { inventoryController } from "./inventory.controller.js";
 
-import { authenticate, requirePermission } from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -11,19 +12,19 @@ router.use(authenticate);
 // Read operations
 router.get(
   "/stock",
-  requirePermission("inventory.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   inventoryController.findStock
 );
 
 router.get(
   "/low-stock",
-  requirePermission("inventory.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   inventoryController.findLowStock
 );
 
 router.get(
   "/history",
-  requirePermission("stock_history.view"),
+  allowRoles("OWNER", "ADMIN", "MANAGER", "STOREKEEPER"),
   inventoryController.findHistory
 );
 
@@ -31,35 +32,35 @@ router.get(
 router.post(
   "/receive",
   doubleCsrfProtection,
-  requirePermission("stock_receive.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   inventoryController.receive
 );
 
 router.post(
   "/issue",
   doubleCsrfProtection,
-  requirePermission("stock_issue.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   inventoryController.issue
 );
 
 router.post(
   "/transfer",
   doubleCsrfProtection,
-  requirePermission("stock_transfer.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   inventoryController.transfer
 );
 
 router.post(
   "/adjustment",
   doubleCsrfProtection,
-  requirePermission("stock_adjustment.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   inventoryController.adjust
 );
 
 router.post(
   "/count",
   doubleCsrfProtection,
-  requirePermission("stock_count.create"),
+  allowRoles("OWNER", "MANAGER", "STOREKEEPER"),
   inventoryController.count
 );
 

@@ -1,8 +1,6 @@
 import { Router } from "express";
-import {
-  authenticate,
-  requirePermission,
-} from "../auth/auth.middleware.js";
+import { authenticate } from "../auth/auth.middleware.js";
+import { allowRoles } from "../../middlewares/role.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 import { salaryComponentController } from "./salary-component.controller.js";
 
@@ -11,7 +9,7 @@ const router = Router();
 router.get(
   "/",
   authenticate,
-  requirePermission("salary_components.view"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   salaryComponentController.findAll
 );
 
@@ -19,7 +17,7 @@ router.post(
   "/",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("salary_components.create"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   salaryComponentController.create
 );
 
@@ -27,7 +25,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  requirePermission("salary_components.update"),
+  allowRoles("OWNER", "ACCOUNTANT"),
   salaryComponentController.update
 );
 
