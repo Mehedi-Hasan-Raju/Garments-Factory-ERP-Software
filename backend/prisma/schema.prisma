@@ -95,6 +95,19 @@ enum PurchaseOrderStatus {
   CANCELLED
 }
 
+enum SupplierPaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CHEQUE
+  MOBILE_BANKING
+  OTHER
+}
+
+enum SupplierPaymentStatus {
+  COMPLETED
+  CANCELLED
+}
+
 model Employee {
   id             String         @id @default(uuid()) @db.Uuid
   employeeCode   String         @unique @db.VarChar(50)
@@ -528,9 +541,10 @@ model Supplier {
   supplierType     SupplierType
   rawMaterialTypes RawMaterialType[] @default([])
 
-  notes          String?         @db.Text
-  isActive       Boolean         @default(true)
-  purchaseOrders PurchaseOrder[]
+  notes            String?           @db.Text
+  isActive         Boolean           @default(true)
+  purchaseOrders   PurchaseOrder[]
+  supplierPayments SupplierPayment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -566,8 +580,9 @@ model PurchaseOrder {
   approvedById String?   @db.Uuid
   approvedAt   DateTime?
 
-  supplier  Supplier  @relation(fields: [supplierId], references: [id], onDelete: Restrict)
-  warehouse Warehouse @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  supplier           Supplier                    @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  warehouse          Warehouse                   @relation(fields: [warehouseId], references: [id], onDelete: Restrict)
+  paymentAllocations SupplierPaymentAllocation[]
 
   items PurchaseOrderItem[]
 
@@ -603,4 +618,120 @@ model PurchaseOrderItem {
 
   @@index([purchaseOrderId, productId])
   @@index([productId])
+}
+
+model SupplierPayment {
+  id        String @id @default(uuid()) @db.Uuid
+  paymentNo String @unique @db.VarChar(50)
+
+  supplierId String @db.Uuid
+
+  amount   Decimal @db.Decimal(18, 2)
+  currency String  @default("BDT") @db.VarChar(3)
+
+  paymentMethod SupplierPaymentMethod
+  status        SupplierPaymentStatus @default(COMPLETED)
+
+  paymentDate DateTime @default(now())
+
+  transactionReference String? @db.VarChar(150)
+  chequeNumber         String? @db.VarChar(100)
+  bankName             String? @db.VarChar(150)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+
+  allocations        SupplierPaymentAllocation[]
+  cancelledAt        DateTime?
+  cancelledById      String?                     @db.Uuid
+  cancellationReason String?                     @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([supplierId, paymentDate])
+  @@index([status, paymentDate])
+  @@index([paymentMethod])
+  @@index([createdById])
+}
+
+model SupplierPaymentAllocation {
+  id String @id @default(uuid()) @db.Uuid
+
+  paymentId       String @db.Uuid
+  purchaseOrderId String @db.Uuid
+
+  amount Decimal @db.Decimal(18, 2)
+
+  payment SupplierPayment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@unique([paymentId, purchaseOrderId])
+  @@index([purchaseOrderId])
+}
+
+model BuyingHouse {
+  id   String @id @default(uuid()) @db.Uuid
+  code String @unique @db.VarChar(50)
+
+  name        String @db.VarChar(150)
+  companyName String @db.VarChar(150)
+
+  country String  @db.VarChar(100)
+  address String? @db.Text
+
+  contactPerson String? @db.VarChar(120)
+  phone         String? @db.VarChar(30)
+  email         String? @db.VarChar(150)
+  website       String? @db.VarChar(255)
+
+  notes    String? @db.Text
+  isActive Boolean @default(true)
+
+  buyers Buyer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([companyName])
+  @@index([country])
+  @@index([isActive])
+}
+
+model Buyer {
+  id        String @id @default(uuid()) @db.Uuid
+  buyerCode String @unique @db.VarChar(50)
+
+  name        String  @db.VarChar(150)
+  companyName String? @db.VarChar(150)
+
+  country String  @db.VarChar(100)
+  address String? @db.Text
+
+  contactPerson String? @db.VarChar(120)
+  designation   String? @db.VarChar(100)
+
+  phone String? @db.VarChar(30)
+  email String? @db.VarChar(150)
+
+  notes    String? @db.Text
+  isActive Boolean @default(true)
+
+  buyingHouseId String      @db.Uuid
+  buyingHouse   BuyingHouse @relation(fields: [buyingHouseId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([buyingHouseId, isActive])
+  @@index([name])
+  @@index([country])
+  @@index([email])
 }

@@ -70,7 +70,7 @@ const getRefreshTokenExpiry = (): Date => {
 };
 
 export const authService = {
-  // Login
+  
   async login(
     input: LoginInput,
     metadata: {
