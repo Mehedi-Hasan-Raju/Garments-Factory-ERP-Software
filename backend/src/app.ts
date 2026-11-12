@@ -25,6 +25,8 @@ import inventoryRoutes from "./modules/inventory/inventory.route.js";
 import supplierRoutes from "./modules/suppliers/supplier.route.js";
 import purchaseOrderRoutes from "./modules/purchase-orders/purchase-order.route.js";
 import buyingHouseRoutes from "./modules/buying-houses/buying-house.route.js";
+import buyerRoutes from "./modules/buyers/buyer.route.js";
+import productionOrderRoutes from "./modules/production-orders/production-order.route.js";
 
 const app = express();
  
@@ -92,6 +94,8 @@ app.use("/api/v1/inventory", inventoryRoutes);
 app.use("/api/v1/suppliers", supplierRoutes);
 app.use("/api/v1/purchase-orders", purchaseOrderRoutes);
 app.use("/api/v1/buying-houses", buyingHouseRoutes);
+app.use("/api/v1/buyers", buyerRoutes);
+app.use("/api/v1/production-orders", productionOrderRoutes);
 
 
 

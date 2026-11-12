@@ -71,6 +71,25 @@ enum RawMaterialType {
   OTHER
 }
 
+enum ProductionOrderStatus {
+  PENDING
+  CUTTING
+  SEWING
+  QC
+  COMPLETED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum ShipmentStatus {
+  NOT_SHIPPED
+  READY
+  PARTIALLY_SHIPPED
+  SHIPPED
+  DELIVERED
+}
+
 model Department {
   id          String  @id @default(uuid()) @db.Uuid
   name        String  @unique @db.VarChar(100)
@@ -149,8 +168,6 @@ model Role {
 
   @@index([isActive])
 }
-
-
 
 model User {
   id           String     @id @default(uuid()) @db.Uuid
@@ -410,6 +427,7 @@ model Product {
   inventoryStocks    InventoryStock[]
   stockMovements     StockMovement[]
   purchaseOrderItems PurchaseOrderItem[]
+  productionOrders   ProductionOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -667,7 +685,8 @@ model BuyingHouse {
   notes    String? @db.Text
   isActive Boolean @default(true)
 
-  buyers Buyer[]
+  buyers           Buyer[]
+  productionOrders ProductionOrder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -700,6 +719,8 @@ model Buyer {
   buyingHouseId String      @db.Uuid
   buyingHouse   BuyingHouse @relation(fields: [buyingHouseId], references: [id], onDelete: Restrict)
 
+  productionOrders ProductionOrder[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -707,4 +728,59 @@ model Buyer {
   @@index([name])
   @@index([country])
   @@index([email])
+}
+
+model ProductionOrder {
+  id          String @id @default(uuid()) @db.Uuid
+  orderNumber String @unique @db.VarChar(50)
+
+  buyingHouseId String @db.Uuid
+  buyerId       String @db.Uuid
+  productId     String @db.Uuid
+
+  styleNumber    String  @db.VarChar(100)
+  designImageUrl String? @db.VarChar(1000)
+
+  orderQuantity Decimal @db.Decimal(18, 3)
+
+  fabricRequirement     Decimal @default(0) @db.Decimal(18, 3)
+  fabricRequirementUnit String  @default("KG") @db.VarChar(20)
+
+  cuttingQuantity       Decimal @default(0) @db.Decimal(18, 3)
+  sewingQuantity        Decimal @default(0) @db.Decimal(18, 3)
+  rejectedQuantity      Decimal @default(0) @db.Decimal(18, 3)
+  finishedGoodsQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  targetPrice Decimal @db.Decimal(18, 2)
+  orderValue  Decimal @db.Decimal(18, 2)
+  currency    String  @default("BDT") @db.VarChar(3)
+
+  paymentTerms String? @db.Text
+
+  orderDate    DateTime @default(now())
+  deliveryDate DateTime
+
+  status         ProductionOrderStatus @default(PENDING)
+  shipmentStatus ShipmentStatus        @default(NOT_SHIPPED)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  buyingHouse BuyingHouse @relation(fields: [buyingHouseId], references: [id], onDelete: Restrict)
+
+  buyer Buyer @relation(fields: [buyerId], references: [id], onDelete: Restrict)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([buyingHouseId, status])
+  @@index([buyerId])
+  @@index([productId])
+  @@index([status, deliveryDate])
+  @@index([orderDate])
+  @@index([deliveryDate])
+  @@index([createdById])
 }
