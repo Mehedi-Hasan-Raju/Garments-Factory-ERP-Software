@@ -9,6 +9,7 @@ import axios from "axios";
 import { Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import { toast } from "sonner";
 
+import { getDashboardPath } from "@/lib/auth/role-routes";
 import { useAuth } from "@/providers/auth-provider";
 import { useLogin } from "@/hooks/use-auth";
 
@@ -24,7 +25,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
   const router = useRouter();
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const loginMutation = useLogin();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -41,16 +42,17 @@ export default function LoginForm() {
   });
 
   useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/dashboard");
-    }
-  }, [status, router]);
+  if (status === "authenticated" && user?.role?.code) {
+    router.replace(getDashboardPath(user.role.code));
+  }
+}, [status, user, router]);
+
 
   const onSubmit = async (values: LoginFormValues) => {
     try {
       await loginMutation.mutateAsync(values);
       toast.success("Login successful");
-      router.replace("/dashboard");
+      
     } catch (error) {
       let message = "Login failed. Please try again.";
 

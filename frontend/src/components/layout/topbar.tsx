@@ -1,18 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import {
   Bell,
-  ChevronDown,
-  LogOut,
   Menu,
   Moon,
   Search,
-  Settings,
   Sun,
-  User,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import UserProfileMenu from "@/components/layout/user-profile-menu";
+
 
 interface TopbarProps {
   onMenuClick: () => void;
@@ -20,7 +17,6 @@ interface TopbarProps {
 
 export function Topbar({ onMenuClick }: TopbarProps) {
   const { theme, setTheme } = useTheme();
-  const [profileOpen, setProfileOpen] = useState(false);
  
   return (
     <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
@@ -84,73 +80,7 @@ export function Topbar({ onMenuClick }: TopbarProps) {
 
         <div className="mx-1 hidden h-8 w-px bg-border sm:block" />
 
-        {/* Profile */}
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setProfileOpen((open) => !open)}
-            aria-expanded={profileOpen}
-            className="flex items-center gap-2 rounded-lg p-1.5 transition-colors hover:bg-muted"
-          >
-            <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-              OW
-            </div>
-
-            <div className="hidden text-left sm:block">
-              <p className="text-xs font-semibold">Owner</p>
-              <p className="text-[10px] text-muted-foreground">Administrator</p>
-            </div>
-
-            <ChevronDown size={15} className="hidden text-muted-foreground sm:block" />
-          </button>
-
-          {profileOpen && (
-            <>
-              <button
-                type="button"
-                aria-label="Close profile menu"
-                className="fixed inset-0 z-30 cursor-default"
-                onClick={() => setProfileOpen(false)}
-              />
-
-              <div className="absolute right-0 top-12 z-40 w-52 rounded-xl border border-border bg-popover p-2 shadow-lg">
-                <div className="border-b border-border px-3 py-2">
-                  <p className="text-sm font-semibold">Owner</p>
-                  <p className="text-xs text-muted-foreground">owner@garments.local</p>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setProfileOpen(false)}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-muted"
-                >
-                  <User size={16} />
-                  My Profile
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setProfileOpen(false)}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm hover:bg-muted"
-                >
-                  <Settings size={16} />
-                  Account Settings
-                </button>
-
-                <div className="my-1 border-t border-border" />
-
-                <button
-                  type="button"
-                  onClick={() => setProfileOpen(false)}
-                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-destructive hover:bg-muted"
-                >
-                  <LogOut size={16} />
-                  Sign out
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        <UserProfileMenu />
       </div>
     </header>
   );

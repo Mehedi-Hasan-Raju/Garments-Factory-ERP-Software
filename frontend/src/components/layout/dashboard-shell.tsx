@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useSyncExternalStore, type ReactNode } from "react";
-import { Sidebar } from "@/components/layout/sidebar";
+import RoleSidebar from "@/components/layout/role-sidebar";
 import { Topbar } from "@/components/layout/topbar";
 
 const subscribeToYear = () => () => {};
@@ -24,7 +24,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <Sidebar
+      <RoleSidebar 
         collapsed={collapsed}
         mobileOpen={mobileOpen}
         onCollapse={() => setCollapsed((value) => !value)}
@@ -39,7 +39,7 @@ export function DashboardShell({ children }: DashboardShellProps) {
         </main>
 
         <footer className="border-t border-border px-6 py-4 text-center text-xs text-muted-foreground">
-          © {currentYear ?? ""} Garments ERP. All rights reserved.
+          © {currentYear ?? ""} Genesys. All rights reserved.
         </footer>
       </div>
     </div>

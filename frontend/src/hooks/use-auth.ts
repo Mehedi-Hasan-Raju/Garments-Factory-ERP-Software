@@ -34,8 +34,11 @@ export function useLogout() {
   return useMutation({
     mutationFn: authService.logout,
 
-    onSettled: () => {
+    onSuccess: () => {
+      
       queryClient.clear();
+
+      
       clearCsrfToken();
     },
   });
