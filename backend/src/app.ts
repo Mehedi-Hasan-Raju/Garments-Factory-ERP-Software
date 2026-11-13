@@ -33,7 +33,7 @@ import qcRoutes from "./modules/qc/qc.route.js";
 import finishedGoodsRoutes from "./modules/finished-goods/finished-goods.route.js";
 import shipmentRoutes from "./modules/shipments/shipment.route.js";
 import notificationRoutes from "./modules/notifications/notification.route.js";
-
+import dashboardRoutes from "./modules/dashboard/dashboard.route.js";
 
 
 const app = express();
@@ -110,7 +110,7 @@ app.use("/api/v1/qc", qcRoutes);
 app.use("/api/v1/finished-goods", finishedGoodsRoutes);
 app.use("/api/v1/shipments", shipmentRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
-
+app.use("/api/v1/dashboard", dashboardRoutes);
 
 
 app.get("/api/v1/health", (_req, res) => {
