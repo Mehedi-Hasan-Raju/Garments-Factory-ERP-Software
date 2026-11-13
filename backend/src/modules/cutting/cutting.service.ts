@@ -1,5 +1,6 @@
 import { AppError } from "../../lib/app-error.js";
 import { cuttingRepository } from "./cutting.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 
 import type {
   CreateCuttingInput,
@@ -19,7 +20,7 @@ export const cuttingService = {
       throw new AppError("Cutting number already exists", 409);
     }
 
-    return cuttingRepository.create({
+    const created = await cuttingRepository.create({
       cuttingNumber: data.cuttingNumber,
       productionOrderId: data.productionOrderId,
       cuttingDate: data.cuttingDate,
@@ -29,6 +30,13 @@ export const cuttingService = {
       notes: data.notes,
       createdById: userId,
     });
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+      title: "Cutting Entry Created",
+      message: `Cutting entry ${created.cuttingNumber} was recorded for production order ${data.productionOrderId}.`,
+      type: "PRODUCTION",
+      actionUrl: `/cutting/${created.id}`,
+    });
+    return created;
   },
 
   async findMany(query: CuttingQuery) {

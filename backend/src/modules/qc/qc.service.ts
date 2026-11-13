@@ -1,6 +1,7 @@
 import { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../lib/app-error.js";
 import { qcRepository } from "./qc.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 import {
   createQCInspectionSchema,
   qcIdSchema,
@@ -75,7 +76,15 @@ export const qcService = {
     }
 
     try {
-      return await qcRepository.create(data, createdById);
+      const created = await qcRepository.create(data, createdById);
+      const rejected = Number(data.rejectedQuantity);
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+        title: rejected > 0 ? "QC Rejection Alert" : "QC Inspection Passed",
+        message: `QC ${created.qcNumber} completed for production order ${data.productionOrderId}. Passed: ${data.passedQuantity}; rejected: ${data.rejectedQuantity}.`,
+        type: "PRODUCTION",
+        actionUrl: `/qc/${created.id}`,
+      });
+      return created;
     } catch (error) {
       handleQCError(error);
     }

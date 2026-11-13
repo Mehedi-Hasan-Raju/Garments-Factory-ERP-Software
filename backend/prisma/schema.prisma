@@ -211,6 +211,11 @@ model User {
   createdFinishedGoods      FinishedGoodsEntry[]    @relation("FinishedGoodsCreatedBy")
   createdFinishedGoodsMoves FinishedGoodsMovement[] @relation("FinishedGoodsMovementCreatedBy")
 
+  createdShipments      Shipment[]      @relation("ShipmentCreatedBy")
+  createdShipmentEvents ShipmentEvent[] @relation("ShipmentEventCreatedBy")
+  notifications         Notification[]
+  auditLogs             AuditLog[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -806,6 +811,7 @@ model ProductionOrder {
   sewingEntries        SewingEntry[]
   qcInspections        QCInspection[]
   finishedGoodsEntries FinishedGoodsEntry[]
+  shipments            Shipment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -971,7 +977,8 @@ model FinishedGoodsEntry {
 
   createdBy User @relation("FinishedGoodsCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
 
-  movements FinishedGoodsMovement[]
+  movements     FinishedGoodsMovement[]
+  shipmentItems ShipmentItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1008,4 +1015,149 @@ model FinishedGoodsMovement {
   @@index([movementType])
   @@index([createdAt])
   @@index([createdById])
+}
+
+model Shipment {
+  id String @id @default(uuid()) @db.Uuid
+
+  shipmentNumber String @unique @db.VarChar(50)
+
+  productionOrderId String @db.Uuid
+
+  shipmentDate DateTime?
+
+  expectedDeliveryDate DateTime?
+
+  actualDeliveryDate DateTime?
+
+  shippingMethod String? @db.VarChar(100)
+
+  carrierName String? @db.VarChar(150)
+
+  trackingNumber String? @db.VarChar(150)
+
+  destination String? @db.Text
+
+  status ShipmentRecordStatus @default(PLANNED)
+
+  totalQuantity Decimal @default(0) @db.Decimal(18, 3)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  productionOrder ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+
+  createdBy User @relation("ShipmentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  items ShipmentItem[]
+
+  events ShipmentEvent[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productionOrderId])
+  @@index([status])
+  @@index([shipmentDate])
+  @@index([expectedDeliveryDate])
+  @@index([createdById])
+}
+
+model ShipmentItem {
+  id String @id @default(uuid()) @db.Uuid
+
+  shipmentId String @db.Uuid
+
+  finishedGoodsEntryId String @db.Uuid
+
+  quantity Decimal @db.Decimal(18, 3)
+
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Restrict)
+
+  finishedGoodsEntry FinishedGoodsEntry @relation(fields: [finishedGoodsEntryId], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([shipmentId, finishedGoodsEntryId])
+  @@index([shipmentId])
+  @@index([finishedGoodsEntryId])
+}
+
+model ShipmentEvent {
+  id String @id @default(uuid()) @db.Uuid
+
+  shipmentId String @db.Uuid
+
+  status ShipmentRecordStatus
+
+  eventDate DateTime @default(now())
+
+  location String? @db.VarChar(255)
+
+  notes String? @db.Text
+
+  createdById String @db.Uuid
+
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Restrict)
+
+  createdBy User @relation("ShipmentEventCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  createdAt DateTime @default(now())
+
+  @@index([shipmentId])
+  @@index([status])
+  @@index([eventDate])
+  @@index([createdById])
+}
+
+model Notification {
+  id String @id @default(uuid()) @db.Uuid
+
+  recipientId String @db.Uuid
+  title       String @db.VarChar(200)
+  message     String @db.Text
+
+  // GENERAL, INVENTORY, PRODUCTION, PURCHASE,
+  // PAYMENT, SHIPMENT, HR, TASK
+  type String @default("GENERAL") @db.VarChar(50)
+
+  actionUrl String? @db.VarChar(500)
+
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  recipient User @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([recipientId, isRead, createdAt])
+  @@index([recipientId, createdAt])
+  @@index([type])
+}
+
+model AuditLog {
+  id          String   @id @default(uuid()) @db.Uuid
+  actorId     String?  @db.Uuid
+  actorEmail  String?  @db.VarChar(150)
+  actorRole   String?  @db.VarChar(80)
+  action      String   @db.VarChar(20)
+  module      String   @db.VarChar(100)
+  method      String   @db.VarChar(10)
+  path        String   @db.VarChar(500)
+  resourceId  String?  @db.VarChar(100)
+  statusCode  Int
+  ipAddress   String?  @db.VarChar(45)
+  userAgent   String?  @db.Text
+  requestData Json?
+  createdAt   DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt])
+  @@index([module, createdAt])
+  @@index([action, createdAt])
+  @@index([createdAt])
 }

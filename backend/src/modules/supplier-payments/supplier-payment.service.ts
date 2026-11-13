@@ -4,6 +4,7 @@ import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../lib/app-error.js";
 
 import { supplierPaymentRepository as repository } from "./supplier-payment.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 
 import type {
   CreateSupplierPaymentInput,
@@ -35,7 +36,7 @@ function validateOrderStatus(status: string) {
 
 export const supplierPaymentService = {
   async create(data: CreateSupplierPaymentInput, createdById: string) {
-    return prisma.$transaction(
+    const created = await prisma.$transaction(
       async (tx) => {
         const supplier = await repository.findSupplier(tx, data.supplierId);
 
@@ -142,13 +143,20 @@ export const supplierPaymentService = {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
       },
     );
+    await notifyRoles(["OWNER", "ADMIN", "ACCOUNTANT"], {
+      title: "Supplier Payment Recorded",
+      message: `Supplier payment ${created.paymentNo} has been recorded. Amount: ${created.amount.toString()}.`,
+      type: "PAYMENT",
+      actionUrl: `/supplier-payments/${created.id}`,
+    });
+    return created;
   },
 
   async allocate(
     paymentId: string,
     data: AllocateSupplierPaymentInput,
   ) {
-    return prisma.$transaction(
+    const allocation = await prisma.$transaction(
       async (tx) => {
         const payment = await repository.findPaymentForAllocation(
           tx,
@@ -241,6 +249,13 @@ export const supplierPaymentService = {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
       },
     );
+    await notifyRoles(["OWNER", "ADMIN", "ACCOUNTANT"], {
+      title: "Supplier Payment Allocated",
+      message: `A supplier payment allocation of ${data.amount} has been recorded for purchase order ${data.purchaseOrderId}.`,
+      type: "PAYMENT",
+      actionUrl: `/supplier-payments/${paymentId}`,
+    });
+    return allocation;
   },
 
   async cancel(
@@ -248,7 +263,7 @@ export const supplierPaymentService = {
     cancelledById: string,
     reason: string,
   ) {
-    return prisma.$transaction(
+    const cancelled = await prisma.$transaction(
       async (tx) => {
         const payment = await repository.findForCancellation(tx, paymentId);
 
@@ -270,6 +285,13 @@ export const supplierPaymentService = {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
       },
     );
+    await notifyRoles(["OWNER", "ADMIN", "ACCOUNTANT"], {
+      title: "Supplier Payment Cancelled",
+      message: `Supplier payment ${paymentId} has been cancelled. Reason: ${reason}`,
+      type: "PAYMENT",
+      actionUrl: `/supplier-payments/${paymentId}`,
+    });
+    return cancelled;
   },
 
   async getById(id: string) {

@@ -31,6 +31,10 @@ import cuttingRoutes from "./modules/cutting/cutting.route.js";
 import sewingRoutes from "./modules/sewing/sewing.route.js";
 import qcRoutes from "./modules/qc/qc.route.js";
 import finishedGoodsRoutes from "./modules/finished-goods/finished-goods.route.js";
+import shipmentRoutes from "./modules/shipments/shipment.route.js";
+import notificationRoutes from "./modules/notifications/notification.route.js";
+
+
 
 const app = express();
  
@@ -104,6 +108,8 @@ app.use("/api/v1/cutting", cuttingRoutes);
 app.use("/api/v1/sewing", sewingRoutes);
 app.use("/api/v1/qc", qcRoutes);
 app.use("/api/v1/finished-goods", finishedGoodsRoutes);
+app.use("/api/v1/shipments", shipmentRoutes);
+app.use("/api/v1/notifications", notificationRoutes);
 
 
 

@@ -1,6 +1,7 @@
 import { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../lib/app-error.js";
 import { finishedGoodsRepository } from "./finished-goods.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 import {
   createFinishedGoodsSchema,
   finishedGoodsIdSchema,
@@ -88,7 +89,14 @@ export const finishedGoodsService = {
     }
 
     try {
-      return await finishedGoodsRepository.create(data, createdById);
+      const created = await finishedGoodsRepository.create(data, createdById);
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+        title: "Finished Goods Received",
+        message: `Finished goods ${created.finishedGoodsNumber} received. Quantity: ${created.quantity.toString()}.`,
+        type: "INVENTORY",
+        actionUrl: `/finished-goods/${created.id}`,
+      });
+      return created;
     } catch (error) {
       handleFinishedGoodsError(error);
     }
@@ -197,11 +205,18 @@ export const finishedGoodsService = {
     }
 
     try {
-      return await finishedGoodsRepository.createMovement(
+      const movement = await finishedGoodsRepository.createMovement(
         idParsed.data.id,
         parsed.data as StockMovementInput,
         createdById,
       );
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+        title: `Finished Goods ${parsed.data.movementType.replaceAll("_", " ")}`,
+        message: `A ${parsed.data.movementType.toLowerCase().replaceAll("_", " ")} movement was recorded for finished goods ${idParsed.data.id}.`,
+        type: "INVENTORY",
+        actionUrl: `/finished-goods/${idParsed.data.id}`,
+      });
+      return movement;
     } catch (error) {
       handleFinishedGoodsError(error);
     }

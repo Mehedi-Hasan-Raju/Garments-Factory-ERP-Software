@@ -2,6 +2,7 @@ import { Prisma } from "../../generated/prisma/client.js";
 import { AppError } from "../../lib/app-error.js";
 
 import { productionOrderRepository } from "./production-order.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 
 import type {
   CreateProductionOrderInput,
@@ -116,7 +117,7 @@ export const productionOrderService = {
       decimal(data.targetPrice),
     );
 
-    return productionOrderRepository.create({
+    const created = await productionOrderRepository.create({
       orderNumber: data.orderNumber,
 
       buyingHouseId: data.buyingHouseId,
@@ -144,6 +145,14 @@ export const productionOrderService = {
 
       createdById: userId,
     });
+
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"], {
+      title: "Production Order Created",
+      message: `Production order ${created.orderNumber} has been created.`,
+      type: "PRODUCTION",
+      actionUrl: `/production-orders/${created.id}`,
+    });
+    return created;
   },
 
   async findMany(query: ProductionOrderQuery) {
@@ -331,7 +340,7 @@ export const productionOrderService = {
       finishedGoodsQuantity,
     );
 
-    return productionOrderRepository.update(id, {
+    const updated = await productionOrderRepository.update(id, {
       ...(data.cuttingQuantity !== undefined && {
         cuttingQuantity,
       }),
@@ -348,6 +357,13 @@ export const productionOrderService = {
         finishedGoodsQuantity,
       }),
     });
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+      title: "Production Progress Updated",
+      message: `Production progress updated for order ${order.orderNumber}.`,
+      type: "PRODUCTION",
+      actionUrl: `/production-orders/${id}`,
+    });
+    return updated;
   },
 
   async updateStatus(
@@ -370,9 +386,14 @@ export const productionOrderService = {
     }
 
     if (nextStatus === "CANCELLED") {
-      return productionOrderRepository.update(id, {
-        status: "CANCELLED",
+      const cancelled = await productionOrderRepository.update(id, { status: "CANCELLED" });
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+        title: "Production Order Cancelled",
+        message: `Production order ${order.orderNumber} has been cancelled.`,
+        type: "PRODUCTION",
+        actionUrl: `/production-orders/${id}`,
       });
+      return cancelled;
     }
 
     const currentIndex = statusFlow.indexOf(
@@ -429,6 +450,7 @@ export const productionOrderService = {
         400,
       );
     }
+    
 
     const updateData: Prisma.ProductionOrderUncheckedUpdateInput = {
       status: nextStatus,
@@ -446,6 +468,14 @@ export const productionOrderService = {
       updateData.shipmentStatus = "DELIVERED";
     }
 
-    return productionOrderRepository.update(id, updateData);
+
+    const updated = await productionOrderRepository.update(id, updateData);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "ACCOUNTANT", "STOREKEEPER"], {
+      title: "Production Order Status Changed",
+      message: `Production order ${order.orderNumber} moved from ${currentStatus} to ${nextStatus}.`,
+      type: "PRODUCTION",
+      actionUrl: `/production-orders/${id}`,
+    });
+    return updated;
   },
 };

@@ -1,6 +1,7 @@
 
 import { AppError } from "../../lib/app-error.js";
 import { payrollRepository } from "./payroll.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 import type {
   GeneratePayrollInput,
   UpdatePayrollAdjustmentInput,
@@ -164,7 +165,7 @@ const items = employees.map((employee) => {
       values.reduce((total, value) => total + toPaisa(value), 0n);
 
     try {
-      return await payrollRepository.create({
+      const created = await payrollRepository.create({
         year: data.year,
         month: data.month,
         totalBasicSalary: fromPaisa(sum(items.map((i) => i.basicSalary))),
@@ -183,6 +184,13 @@ const items = employees.map((employee) => {
         totalNetSalary: fromPaisa(sum(items.map((i) => i.netSalary))),
         items,
       });
+      await notifyRoles(["OWNER", "ADMIN", "ACCOUNTANT"], {
+        title: "Payroll Generated",
+        message: `Payroll for ${data.month}/${data.year} has been generated and is awaiting approval.`,
+        type: "HR",
+        actionUrl: `/payrolls/${created.id}`,
+      });
+      return created;
     } catch (error) {
       if (isPrismaError(error, "P2002")) {
         throw new AppError("Payroll already exists for this month", 409);
@@ -317,7 +325,14 @@ const total = (
     await this.findById(id);
 
     try {
-      return await payrollRepository.changeStatus(id, "DRAFT", "APPROVED");
+      const approved = await payrollRepository.changeStatus(id, "DRAFT", "APPROVED");
+      await notifyRoles(["OWNER", "ACCOUNTANT"], {
+        title: "Payroll Approved",
+        message: `Payroll ${id} has been approved.`,
+        type: "HR",
+        actionUrl: `/payrolls/${id}`,
+      });
+      return approved;
     } catch {
       throw new AppError("Payroll cannot be approved in its current status", 409);
     }
@@ -327,7 +342,14 @@ const total = (
     await this.findById(id);
 
     try {
-      return await payrollRepository.changeStatus(id, "APPROVED", "PAID");
+      const paid = await payrollRepository.changeStatus(id, "APPROVED", "PAID");
+      await notifyRoles(["OWNER", "ACCOUNTANT", "MANAGER"], {
+        title: "Payroll Marked as Paid",
+        message: `Payroll ${id} has been marked as paid.`,
+        type: "HR",
+        actionUrl: `/payrolls/${id}`,
+      });
+      return paid;
     } catch {
       throw new AppError("Only approved payroll can be marked as paid", 409);
     }

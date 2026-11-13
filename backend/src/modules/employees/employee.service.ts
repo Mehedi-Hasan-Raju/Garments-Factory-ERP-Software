@@ -1,6 +1,7 @@
 
 import { AppError } from "../../lib/app-error.js";
 import { employeeRepository } from "./employee.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 import type {
   CreateEmployeeInput,
   EmployeeQueryInput,
@@ -37,7 +38,14 @@ export const employeeService = {
     await validateDepartment(data.departmentId);
 
     try {
-      return await employeeRepository.create(data);
+      const created = await employeeRepository.create(data);
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+        title: "New Employee Created",
+        message: `Employee ${created.employeeCode} has been added to the organization.`,
+        type: "HR",
+        actionUrl: `/employees/${created.id}`,
+      });
+      return created;
     } catch (error) {
       if (isPrismaError(error, "P2002")) {
         throw new AppError(
@@ -109,7 +117,14 @@ export const employeeService = {
   async updateStatus(id: string, data: UpdateEmployeeStatusInput) {
     await this.findById(id);
 
-    return employeeRepository.updateStatus(id, data.status);
+    const updated = await employeeRepository.updateStatus(id, data.status);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+      title: "Employee Status Updated",
+      message: `Employee ${updated.employeeCode} status changed to ${data.status}.`,
+      type: "HR",
+      actionUrl: `/employees/${id}`,
+    });
+    return updated;
   },
 
   async delete(id: string) {

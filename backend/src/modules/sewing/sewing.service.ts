@@ -1,5 +1,6 @@
 import { AppError } from "../../lib/app-error.js";
 import { sewingRepository } from "./sewing.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 import {
   createSewingSchema,
   updateSewingSchema,
@@ -75,7 +76,14 @@ export const sewingService = {
     }
 
     try {
-      return await sewingRepository.create(data, createdById);
+      const created = await sewingRepository.create(data, createdById);
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER"], {
+        title: "Sewing Entry Recorded",
+        message: `Sewing entry ${created.sewingNumber} was recorded for production order ${data.productionOrderId}.`,
+        type: "PRODUCTION",
+        actionUrl: `/sewing/${created.id}`,
+      });
+      return created;
     } catch (error) {
       handleRepositoryError(error);
     }

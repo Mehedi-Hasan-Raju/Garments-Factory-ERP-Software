@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma.js";
 import { AppError } from "../../lib/app-error.js";
 import { inventoryRepository } from "./inventory.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 
 import type {
   ReceiveStockInput,
@@ -71,21 +72,68 @@ async function validateBatch(productId: string, batchLotId: string) {
   }
 }
 
+
+async function notifyLowStock(productId: string) {
+  try {
+    const stocks = await prisma.inventoryStock.findMany({
+      where: { productId },
+      include: { product: { select: { name: true } } },
+    });
+
+    for (const stock of stocks) {
+      if (stock.quantity.lte(stock.minimumStock)) {
+        await notifyRoles(
+          ["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"],
+          {
+            title: "Low Stock Alert",
+            message: `${stock.product.name} has reached its minimum stock level. Current quantity: ${stock.quantity.toString()}.`,
+            type: "INVENTORY",
+            actionUrl: `/inventory?productId=${productId}`,
+            deduplicateUnread: true,
+          },
+        );
+      }
+    }
+  } catch (error) {
+    console.error("[inventory-notification] Low-stock check failed:", error);
+  }
+}
+
 export const inventoryService = {
   async receive(data: ReceiveStockInput, userId: string) {
     await validateProduct(data.productId);
     await validateBinLocation(data.locationId);
 
-    return inventoryRepository.receive(data, userId);
+    const result = await inventoryRepository.receive(data, userId);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+      title: "Stock Received",
+      message: `Stock received for product ${data.productId}. Quantity: ${data.quantity}.`,
+      type: "INVENTORY",
+      actionUrl: "/inventory",
+    });
+    await notifyLowStock(data.productId);
+    return result;
   },
+
+
 
   async issue(data: IssueStockInput, userId: string) {
     await validateProduct(data.productId);
     await validateBinLocation(data.locationId);
     await validateBatch(data.productId, data.batchLotId);
 
-    return inventoryRepository.issue(data, userId);
+    const result = await inventoryRepository.issue(data, userId);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+      title: "Stock Issued",
+      message: `Stock issued for product ${data.productId}. Quantity: ${data.quantity}.`,
+      type: "INVENTORY",
+      actionUrl: "/inventory",
+    });
+    await notifyLowStock(data.productId);
+    return result;
   },
+
+
 
   async transfer(data: TransferStockInput, userId: string) {
     if (data.fromLocationId === data.toLocationId) {
@@ -100,15 +148,32 @@ export const inventoryService = {
       validateBinLocation(data.toLocationId),
     ]);
 
-    return inventoryRepository.transfer(data, userId);
+    const result = await inventoryRepository.transfer(data, userId);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+      title: "Stock Transferred",
+      message: `Stock transferred for product ${data.productId}. Quantity: ${data.quantity}.`,
+      type: "INVENTORY",
+      actionUrl: "/inventory",
+    });
+    await notifyLowStock(data.productId);
+    return result;
   },
 
+  
   async adjust(data: AdjustmentStockInput, userId: string) {
     await validateProduct(data.productId);
     await validateBinLocation(data.locationId);
     await validateBatch(data.productId, data.batchLotId);
 
-    return inventoryRepository.adjust(data, userId);
+    const result = await inventoryRepository.adjust(data, userId);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+      title: "Stock Adjusted",
+      message: `Stock quantity adjusted for product ${data.productId}.`,
+      type: "INVENTORY",
+      actionUrl: "/inventory",
+    });
+    await notifyLowStock(data.productId);
+    return result;
   },
 
   async count(data: CountStockInput, userId: string) {
@@ -116,7 +181,15 @@ export const inventoryService = {
     await validateBinLocation(data.locationId);
     await validateBatch(data.productId, data.batchLotId);
 
-    return inventoryRepository.count(data, userId);
+    const result = await inventoryRepository.count(data, userId);
+    await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER"], {
+      title: "Stock Count Completed",
+      message: `Physical stock count completed for product ${data.productId}.`,
+      type: "INVENTORY",
+      actionUrl: "/inventory",
+    });
+    await notifyLowStock(data.productId);
+    return result;
   },
 
   async findStock(query: StockListQuery) {

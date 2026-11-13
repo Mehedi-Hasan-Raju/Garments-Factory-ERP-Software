@@ -1,5 +1,6 @@
 import { AppError } from "../../lib/app-error.js";
 import { purchaseOrderRepository } from "./purchase-order.repository.js";
+import { notifyRoles } from "../../lib/automatic-notification.js";
 
 import type {
   CreatePurchaseOrderInput,
@@ -87,7 +88,14 @@ function handleRepositoryError(error: unknown): never {
 export const purchaseOrderService = {
   async create(data: CreatePurchaseOrderInput, userId: string) {
     try {
-      return await purchaseOrderRepository.create(data, userId);
+      const created = await purchaseOrderRepository.create(data, userId);
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER", "ACCOUNTANT"], {
+        title: "Purchase Order Created",
+        message: `Purchase order ${created.poNumber} has been created.`,
+        type: "PURCHASE",
+        actionUrl: `/purchase-orders/${created.id}`,
+      });
+      return created;
     } catch (error) {
       handleRepositoryError(error);
     }
@@ -117,7 +125,15 @@ export const purchaseOrderService = {
 
   async submit(id: string) {
     try {
-      return await purchaseOrderRepository.submit(id);
+      const updated = await purchaseOrderRepository.submit(id);
+      if (!updated) return updated;
+      await notifyRoles(["OWNER", "MANAGER", "ACCOUNTANT"], {
+        title: "Purchase Order Submitted",
+        message: `Purchase order ${updated.poNumber} has been submitted for approval.`,
+        type: "PURCHASE",
+        actionUrl: `/purchase-orders/${id}`,
+      });
+      return updated;
     } catch (error) {
       handleRepositoryError(error);
     }
@@ -125,7 +141,15 @@ export const purchaseOrderService = {
 
   async approve(id: string, userId: string) {
     try {
-      return await purchaseOrderRepository.approve(id, userId);
+      const updated = await purchaseOrderRepository.approve(id, userId);
+      if (!updated) return updated;
+      await notifyRoles(["OWNER", "MANAGER", "ACCOUNTANT", "STOREKEEPER"], {
+        title: "Purchase Order Approved",
+        message: `Purchase order ${updated.poNumber} has been approved.`,
+        type: "PURCHASE",
+        actionUrl: `/purchase-orders/${id}`,
+      });
+      return updated;
     } catch (error) {
       handleRepositoryError(error);
     }
@@ -145,7 +169,15 @@ export const purchaseOrderService = {
     userId: string,
   ) {
     try {
-      return await purchaseOrderRepository.receive(id, data, userId);
+      const updated = await purchaseOrderRepository.receive(id, data, userId);
+      if (!updated) return updated;
+      await notifyRoles(["OWNER", "ADMIN", "MANAGER", "STOREKEEPER", "ACCOUNTANT"], {
+        title: "Purchase Goods Received",
+        message: `Goods have been received against purchase order ${updated.poNumber}.`,
+        type: "PURCHASE",
+        actionUrl: `/purchase-orders/${id}`,
+      });
+      return updated;
     } catch (error) {
       handleRepositoryError(error);
     }
