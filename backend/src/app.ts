@@ -34,7 +34,7 @@ import finishedGoodsRoutes from "./modules/finished-goods/finished-goods.route.j
 import shipmentRoutes from "./modules/shipments/shipment.route.js";
 import notificationRoutes from "./modules/notifications/notification.route.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.route.js";
-
+import auditLogRoutes from "./modules/audit-logs/audit-log.route.js";
 
 const app = express();
  
@@ -111,7 +111,7 @@ app.use("/api/v1/finished-goods", finishedGoodsRoutes);
 app.use("/api/v1/shipments", shipmentRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/dashboard", dashboardRoutes);
-
+app.use("/api/v1/audit-logs", auditLogRoutes);
 
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({
