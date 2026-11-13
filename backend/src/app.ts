@@ -9,7 +9,7 @@ import { AppError } from "./lib/app-error.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import { csrfBindingMiddleware } from "./middlewares/csrf.middleware.js";
 
-
+import { doubleCsrfProtection } from "./middlewares/csrf.middleware.js";
 import authRoutes from "./modules/auth/auth.route.js";
 import userRoutes from "./modules/users/user.route.js";
 import departmentRoutes from "./modules/departments/department.route.js";
@@ -86,12 +86,15 @@ const apiLimiter = rateLimit({
 
 
 
+
 app.use("/api", apiLimiter);
+
 app.use("/api/v1/auth", authRoutes);
+
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/departments", departmentRoutes);
 app.use("/api/v1/warehouses", warehouseRoutes);
-app.use("/api/v1/warehouse-locations",warehouseLocationRoutes);
+app.use("/api/v1/warehouse-locations", warehouseLocationRoutes);
 app.use("/api/v1/employees", employeeRoutes);
 app.use("/api/v1/salary-components", salaryComponentRoutes);
 app.use("/api/v1/payrolls", payrollRoutes);
@@ -100,18 +103,24 @@ app.use("/api/v1/units", unitRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/inventory", inventoryRoutes);
 app.use("/api/v1/suppliers", supplierRoutes);
-app.use("/api/v1/purchase-orders", purchaseOrderRoutes);
-app.use("/api/v1/buying-houses", buyingHouseRoutes);
-app.use("/api/v1/buyers", buyerRoutes);
-app.use("/api/v1/production-orders", productionOrderRoutes);
-app.use("/api/v1/cutting", cuttingRoutes);
-app.use("/api/v1/sewing", sewingRoutes);
-app.use("/api/v1/qc", qcRoutes);
-app.use("/api/v1/finished-goods", finishedGoodsRoutes);
-app.use("/api/v1/shipments", shipmentRoutes);
-app.use("/api/v1/notifications", notificationRoutes);
+
+// CSRF Protected Modules
+app.use("/api/v1/purchase-orders", doubleCsrfProtection, purchaseOrderRoutes);
+app.use("/api/v1/buying-houses", doubleCsrfProtection, buyingHouseRoutes);
+app.use("/api/v1/buyers", doubleCsrfProtection, buyerRoutes);
+app.use("/api/v1/production-orders", doubleCsrfProtection, productionOrderRoutes);
+app.use("/api/v1/cutting", doubleCsrfProtection, cuttingRoutes);
+app.use("/api/v1/sewing", doubleCsrfProtection, sewingRoutes);
+app.use("/api/v1/qc", doubleCsrfProtection, qcRoutes);
+app.use("/api/v1/finished-goods", doubleCsrfProtection, finishedGoodsRoutes);
+app.use("/api/v1/shipments", doubleCsrfProtection, shipmentRoutes);
+app.use("/api/v1/notifications", doubleCsrfProtection, notificationRoutes);
+
 app.use("/api/v1/dashboard", dashboardRoutes);
 app.use("/api/v1/audit-logs", auditLogRoutes);
+
+
+
 
 app.get("/api/v1/health", (_req, res) => {
   res.status(200).json({

@@ -1,11 +1,14 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+
 import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+
 import { ThemeProvider } from "@/providers/theme-provider";
+import { AuthProvider } from "@/providers/auth-provider";
 import { Toaster } from "sonner";
 
 interface AppProviderProps {
@@ -32,13 +35,10 @@ export function AppProvider({ children }: AppProviderProps) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        {children}
-
-        <Toaster
-          position="top-right"
-          richColors
-          closeButton
-        />
+        <AuthProvider>
+          {children}
+          <Toaster position="top-right" richColors closeButton />
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

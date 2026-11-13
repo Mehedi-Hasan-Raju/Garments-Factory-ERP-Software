@@ -80,6 +80,32 @@ export const authController = {
     }
   },
 
+  async me(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      if (!req.authUser) {
+        res.status(401).json({
+          success: false,
+          message: "Authentication required",
+        });
+        return;
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Authenticated user fetched successfully",
+        data: {
+          user: req.authUser,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async login(
     req: Request,
     res: Response,

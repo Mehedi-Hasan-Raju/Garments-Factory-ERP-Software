@@ -2,6 +2,7 @@ import { Router } from "express";
 import rateLimit from "express-rate-limit";
 
 import { authController } from "./auth.controller.js";
+import { authenticate } from "./auth.middleware.js";
 import { doubleCsrfProtection } from "../../middlewares/csrf.middleware.js";
 
 const router = Router();
@@ -21,6 +22,12 @@ const loginLimiter = rateLimit({
 // Public CSRF token endpoint
 router.get("/csrf-token", authController.csrfToken);
 
+// Get authenticated user
+router.get(
+  "/me",
+  authenticate,
+  authController.me,
+);
 
 router.post(
   "/login",
