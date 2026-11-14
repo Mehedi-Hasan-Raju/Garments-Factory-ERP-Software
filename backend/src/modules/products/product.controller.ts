@@ -135,4 +135,27 @@ export const productController = {
       next(error);
     }
   },
+
+  async permanentDelete(req: Request, res: Response, next: NextFunction) {
+    try {
+      const parsed = productIdSchema.safeParse(req.params);
+
+      if (!parsed.success) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid product ID",
+        });
+      }
+
+      const data = await productService.permanentDelete(parsed.data.id);
+
+      return res.status(200).json({
+        success: true,
+        message: "Product permanently deleted",
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

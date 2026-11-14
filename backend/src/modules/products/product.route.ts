@@ -44,4 +44,12 @@ router.delete(
   productController.delete,
 );
 
+router.delete(
+  "/:id/permanent",
+  authenticate,
+  doubleCsrfProtection,
+  allowRoles("OWNER"),
+  productController.permanentDelete,
+);
+
 export default router;

@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { Ruler,Package } from "lucide-react";
 import {
   LayoutDashboard,
   Users,
@@ -71,7 +72,32 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
           icon: FolderTree,
           disabled: false,
         },
-        { label: "Purchase Orders", href: "/purchase-orders", icon: ShoppingCart, disabled: comingSoon },
+        {
+          label: "Units",
+          href: "/dashboard/inventory/units",
+          icon: Ruler,
+          disabled: false,
+        },
+        {
+          label: "Products",
+          href: "/dashboard/inventory/products",
+          icon: Package,
+          disabled: false,
+          
+        },
+        {
+          label: "Suppliers",
+          href: "/dashboard/suppliers",
+          icon: Truck,
+          disabled: false,
+        },
+        {
+         label: "Purchase Orders",
+         href: "/dashboard/purchase-orders",
+         icon: ShoppingCart,
+         disabled: false,
+        },
+        
         { label: "Production", href: "/production", icon: ClipboardList, disabled: comingSoon },
         { label: "Cutting", href: "/cutting", icon: Scissors, disabled: comingSoon },
         { label: "Sewing", href: "/sewing", icon: Shirt, disabled: comingSoon },
@@ -114,7 +140,24 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
       items: [
         { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
         { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
-        { label: "Purchase Orders", href: "/purchase-orders", icon: ShoppingCart, disabled: comingSoon },
+        {
+          label: "Products",
+          href: "/dashboard/inventory/products",
+          icon: Package,
+          disabled: false,
+        },
+        {
+          label: "Suppliers",
+          href: "/dashboard/suppliers",
+          icon: Truck,
+          disabled: false,
+        },
+        {
+          label: "Purchase Orders",
+           href: "/dashboard/purchase-orders",
+          icon: ShoppingCart,
+         disabled: false,
+       },
       ],
     },
     {
@@ -149,6 +192,30 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
           icon: FolderTree,
           disabled: comingSoon,
         },
+        {
+          label: "Units",
+          href: "/dashboard/inventory/units",
+          icon: Ruler,
+          disabled: false,
+        },
+        {
+          label: "Products",
+          href: "/dashboard/inventory/products",
+          icon: Package,
+          disabled: false,
+        },
+        {
+          label: "Suppliers",
+          href: "/dashboard/suppliers",
+          icon: Truck,
+          disabled: false,
+        },
+        {
+          label: "Purchase Orders",
+           href: "/dashboard/purchase-orders",
+          icon: ShoppingCart,
+         disabled: false,
+       },
       ],
     },
   ],
@@ -159,6 +226,18 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
       title: "Finance",
       items: [
         { label: "Payroll", href: "/payroll", icon: Wallet, disabled: comingSoon },
+         {
+          label: "Suppliers",
+          href: "/dashboard/suppliers",
+          icon: Truck,
+          disabled: false,
+        },
+        {
+          label: "Purchase Orders",
+           href: "/dashboard/purchase-orders",
+          icon: ShoppingCart,
+         disabled: false,
+       },
         { label: "Supplier Payments", href: "/supplier-payments", icon: Receipt, disabled: comingSoon },
         { label: "Cash Management", href: "/cash-management", icon: Wallet, disabled: true },
         { label: "Reports", href: "/reports", icon: BarChart3, disabled: comingSoon },
@@ -173,6 +252,12 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
       items: [
         { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
         { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
+        {
+          label: "Units",
+          href: "/dashboard/inventory/units",
+          icon: Ruler,
+          disabled: false,
+        },
         { label: "Stock Operations", href: "/stock-operations", icon: ClipboardList, disabled: comingSoon },
         { label: "Finished Goods", href: "/finished-goods", icon: PackageCheck, disabled: comingSoon },
       ],

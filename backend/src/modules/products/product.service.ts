@@ -112,8 +112,60 @@ export const productService = {
   },
 
   async delete(id: string) {
-  await this.findById(id);
+    await this.findById(id);
 
-  return productRepository.update(id, { isActive: false });
-},
+    return productRepository.update(id, { isActive: false });
+  },
+
+  async permanentDelete(id: string) {
+    await this.findById(id);
+
+    try {
+      return await prisma.$transaction(
+        async (tx) => {
+          const usage = await productRepository.getUsageCounts(id, tx);
+
+          if (!usage) {
+            throw new AppError("Product not found", 404);
+          }
+
+          const hasHistory = Object.values(usage._count).some(
+            (count) => count > 0,
+          );
+
+          if (hasHistory) {
+            throw new AppError(
+              "This product has inventory, purchase, or production history. Permanent deletion is not allowed.",
+              409,
+            );
+          }
+
+          return productRepository.permanentDelete(id, tx);
+        },
+        { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+      );
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2025") {
+          throw new AppError("Product not found", 404);
+        }
+
+        if (error.code === "P2034") {
+          throw new AppError(
+            "Product usage changed during deletion. Please try again.",
+            409,
+          );
+        }
+
+        if (error.code === "P2003") {
+          throw new AppError(
+            "This product has related records and cannot be permanently deleted.",
+            409,
+          );
+        }
+      }
+
+      throw error;
+    }
+  },
 };

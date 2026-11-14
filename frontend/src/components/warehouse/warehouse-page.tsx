@@ -21,6 +21,7 @@ import {
   Package,
 } from "lucide-react";
 
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { useAuth } from "@/providers/auth-provider";
 
 import {
@@ -42,6 +43,14 @@ import type {
 } from "@/types/warehouse";
 
 type Tab = "warehouses" | "locations";
+
+type ConfirmAction = {
+  title: string;
+  description: string;
+  confirmText: string;
+  variant: "warning" | "danger";
+  onConfirm: () => Promise<boolean>;
+};
 
 type WarehouseForm = {
   name: string;
@@ -69,6 +78,8 @@ const emptyLocationForm: LocationForm = {
   parentId: "",
 };
 
+const EMPTY_LOCATIONS: WarehouseLocation[] = [];
+
 export default function WarehousePage() {
   const { user } = useAuth();
   const role = user?.role.code;
@@ -95,6 +106,8 @@ export default function WarehousePage() {
 
   const [locationForm, setLocationForm] =
     useState<LocationForm>(emptyLocationForm);
+  const [confirmAction, setConfirmAction] =
+    useState<ConfirmAction | null>(null);
 
   const [expandedRacks, setExpandedRacks] = useState<string[]>([]);
   const [expandedShelves, setExpandedShelves] = useState<string[]>([]);
@@ -117,7 +130,7 @@ export default function WarehousePage() {
     warehouseId: selectedWarehouseId || undefined,
   });
 
-  const locations = locationsQuery.data?.locations ?? [];
+  const locations = locationsQuery.data?.locations ?? EMPTY_LOCATIONS;
 
   const createWarehouse = useCreateWarehouse();
   const updateWarehouse = useUpdateWarehouse();
@@ -210,18 +223,42 @@ export default function WarehousePage() {
       description: warehouseForm.description.trim() || null,
     };
 
+    if (editingWarehouse) {
+      const warehouseId = editingWarehouse.id;
+      const warehouseName = editingWarehouse.name;
+
+      setConfirmAction({
+        title: "Update Warehouse?",
+        description: `Save changes to "${warehouseName}"?`,
+        confirmText: "Save Changes",
+        variant: "warning",
+        onConfirm: async () => {
+          try {
+            await updateWarehouse.mutateAsync({
+              id: warehouseId,
+              payload,
+            });
+            toast.success("Warehouse updated successfully.");
+            setWarehouseDialog(false);
+            setWarehouseForm(emptyWarehouseForm);
+            return true;
+          } catch (error) {
+            toast.error(
+              error instanceof Error
+                ? error.message
+                : "Warehouse operation failed.",
+            );
+            return false;
+          }
+        },
+      });
+      return;
+    }
+
     try {
-      if (editingWarehouse) {
-        await updateWarehouse.mutateAsync({
-          id: editingWarehouse.id,
-          payload,
-        });
-        toast.success("Warehouse updated successfully.");
-      } else {
-        const created = await createWarehouse.mutateAsync(payload) as Warehouse;
-        setSelectedWarehouseId(created.id);
-        toast.success("Warehouse created successfully.");
-      }
+      const created = await createWarehouse.mutateAsync(payload) as Warehouse;
+      setSelectedWarehouseId(created.id);
+      toast.success("Warehouse created successfully.");
 
       setWarehouseDialog(false);
       setWarehouseForm(emptyWarehouseForm);
@@ -257,32 +294,55 @@ export default function WarehousePage() {
       return;
     }
 
+    if (editingLocation) {
+      const locationId = editingLocation.id;
+      const locationName = editingLocation.name;
+      const payload = {
+        name: locationForm.name.trim(),
+        code: locationForm.code.trim(),
+        type: locationForm.type,
+        parentId: locationForm.parentId || null,
+      };
+
+      setConfirmAction({
+        title: "Update Location?",
+        description: `Save changes to "${locationName}"?`,
+        confirmText: "Save Changes",
+        variant: "warning",
+        onConfirm: async () => {
+          try {
+            await updateLocation.mutateAsync({
+              id: locationId,
+              payload,
+            });
+            toast.success("Location updated successfully.");
+            setLocationDialog(false);
+            setLocationForm(emptyLocationForm);
+            return true;
+          } catch (error) {
+            toast.error(
+              error instanceof Error
+                ? error.message
+                : "Location operation failed.",
+            );
+            return false;
+          }
+        },
+      });
+      return;
+    }
+
     try {
-      if (editingLocation) {
-        const payload = {
-          name: locationForm.name.trim(),
-          code: locationForm.code.trim(),
-          type: locationForm.type,
-          parentId: locationForm.parentId || null,
-        };
+      const payload = {
+        name: locationForm.name.trim(),
+        code: locationForm.code.trim(),
+        type: locationForm.type,
+        warehouseId: selectedWarehouseId,
+        parentId: locationForm.parentId || null,
+      };
 
-        await updateLocation.mutateAsync({
-          id: editingLocation.id,
-          payload,
-        });
-        toast.success("Location updated successfully.");
-      } else {
-        const payload = {
-          name: locationForm.name.trim(),
-          code: locationForm.code.trim(),
-          type: locationForm.type,
-          warehouseId: selectedWarehouseId,
-          parentId: locationForm.parentId || null,
-        };
-
-        await createLocation.mutateAsync(payload);
-        toast.success("Location created successfully.");
-      }
+      await createLocation.mutateAsync(payload);
+      toast.success("Location created successfully.");
 
       setLocationDialog(false);
       setLocationForm(emptyLocationForm);
@@ -294,61 +354,86 @@ export default function WarehousePage() {
   };
 
   const handleWarehouseStatus = async (warehouse: Warehouse) => {
-    try {
-      await updateWarehouseStatus.mutateAsync({
-        id: warehouse.id,
-        isActive: !warehouse.isActive,
-      });
+    const nextStatus = !warehouse.isActive;
 
-      toast.success(
-        warehouse.isActive
-          ? "Warehouse deactivated."
-          : "Warehouse activated.",
-      );
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Status update failed.",
-      );
-    }
+    setConfirmAction({
+      title: nextStatus ? "Activate Warehouse?" : "Deactivate Warehouse?",
+      description: `Are you sure you want to ${
+        nextStatus ? "activate" : "deactivate"
+      } "${warehouse.name}"?`,
+      confirmText: nextStatus ? "Activate" : "Deactivate",
+      variant: "warning",
+      onConfirm: async () => {
+        try {
+          await updateWarehouseStatus.mutateAsync({
+            id: warehouse.id,
+            isActive: nextStatus,
+          });
+          toast.success(
+            warehouse.isActive
+              ? "Warehouse deactivated."
+              : "Warehouse activated.",
+          );
+          return true;
+        } catch (error) {
+          toast.error(
+            error instanceof Error ? error.message : "Status update failed.",
+          );
+          return false;
+        }
+      },
+    });
   };
 
   const handleDeleteWarehouse = async (warehouse: Warehouse) => {
-    const confirmed = window.confirm(
-      `Delete "${warehouse.name}"? This action cannot be undone.`,
-    );
+    setConfirmAction({
+      title: "Delete Warehouse?",
+      description: `Delete "${warehouse.name}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await deleteWarehouse.mutateAsync(warehouse.id);
 
-    if (!confirmed) return;
+          if (selectedWarehouseId === warehouse.id) {
+            setSelectedWarehouseId("");
+          }
 
-    try {
-      await deleteWarehouse.mutateAsync(warehouse.id);
-
-      if (selectedWarehouseId === warehouse.id) {
-        setSelectedWarehouseId("");
-      }
-
-      toast.success("Warehouse deleted successfully.");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Could not delete warehouse.",
-      );
-    }
+          toast.success("Warehouse deleted successfully.");
+          return true;
+        } catch (error) {
+          toast.error(
+            error instanceof Error
+              ? error.message
+              : "Could not delete warehouse.",
+          );
+          return false;
+        }
+      },
+    });
   };
 
   const handleDeleteLocation = async (location: WarehouseLocation) => {
-    const confirmed = window.confirm(
-      `Delete "${location.name}"?`,
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await deleteLocation.mutateAsync(location.id);
-      toast.success("Location deleted successfully.");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Could not delete location.",
-      );
-    }
+    setConfirmAction({
+      title: "Delete Location?",
+      description: `Delete "${location.name}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      variant: "danger",
+      onConfirm: async () => {
+        try {
+          await deleteLocation.mutateAsync(location.id);
+          toast.success("Location deleted successfully.");
+          return true;
+        } catch (error) {
+          toast.error(
+            error instanceof Error
+              ? error.message
+              : "Could not delete location.",
+          );
+          return false;
+        }
+      },
+    });
   };
 
   const toggleExpanded = (
@@ -371,6 +456,13 @@ export default function WarehousePage() {
 
   const isLocationSaving =
     createLocation.isPending || updateLocation.isPending;
+
+  const isConfirmActionLoading =
+    updateWarehouse.isPending ||
+    updateWarehouseStatus.isPending ||
+    deleteWarehouse.isPending ||
+    updateLocation.isPending ||
+    deleteLocation.isPending;
 
   return (
     <div className="space-y-6">
@@ -936,6 +1028,22 @@ export default function WarehousePage() {
           </form>
         </Dialog>
       )}
+
+      <ConfirmDialog
+        open={!!confirmAction}
+        title={confirmAction?.title ?? ""}
+        description={confirmAction?.description ?? ""}
+        confirmText={confirmAction?.confirmText ?? ""}
+        variant={confirmAction?.variant}
+        loading={isConfirmActionLoading}
+        onCancel={() => setConfirmAction(null)}
+        onConfirm={async () => {
+          if (!confirmAction) return;
+          if (await confirmAction.onConfirm()) {
+            setConfirmAction(null);
+          }
+        }}
+      />
     </div>
   );
 }

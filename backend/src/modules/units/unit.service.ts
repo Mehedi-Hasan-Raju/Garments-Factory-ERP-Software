@@ -39,6 +39,16 @@ export const unitService = {
   async update(id: string, data: UpdateUnitInput) {
     await this.findById(id);
 
+    if (
+      data.isActive === false &&
+      (await unitRepository.hasProducts(id))
+    ) {
+      throw new AppError(
+        "Cannot deactivate a unit that is currently assigned to products",
+        409,
+      );
+    }
+
     try {
       return await unitRepository.update(id, data);
     } catch (error) {

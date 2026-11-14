@@ -100,4 +100,27 @@ export const productRepository = {
     // Product deactivation is currently allowed.
     return false;
   },
+
+  getUsageCounts(id: string, tx: Prisma.TransactionClient) {
+    return tx.product.findUnique({
+      where: { id },
+      select: {
+        _count: {
+          select: {
+            batchLots: true,
+            inventoryStocks: true,
+            stockMovements: true,
+            purchaseOrderItems: true,
+            productionOrders: true,
+          },
+        },
+      },
+    });
+  },
+
+  permanentDelete(id: string, tx: Prisma.TransactionClient) {
+    return tx.product.delete({
+      where: { id },
+    });
+  },
 };
