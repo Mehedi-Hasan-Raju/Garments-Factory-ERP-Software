@@ -1,4 +1,4 @@
-
+import { AppError } from "../../lib/app-error.js";
 import type { Request, Response, NextFunction } from "express";
 import { inventoryService } from "./inventory.service.js";
 
@@ -12,11 +12,13 @@ import {
   historyQuerySchema,
 } from "./inventory.validation.js";
 
-type AuthenticatedRequest = Request & {
-  user: {
-    userId: string;
-  };
-};
+function getAuthenticatedUserId(req: Request): string {
+  if (!req.authUser) {
+    throw new AppError("Authentication required", 401);
+  }
+
+  return req.authUser.id;
+}
 
 export const inventoryController = {
   async receive(req: Request, res: Response, next: NextFunction) {
@@ -31,7 +33,7 @@ export const inventoryController = {
         });
       }
 
-      const userId = (req as AuthenticatedRequest).user.userId;
+      const userId = getAuthenticatedUserId(req);
       const data = await inventoryService.receive(parsed.data, userId);
 
       return res.status(201).json({
@@ -56,7 +58,7 @@ export const inventoryController = {
         });
       }
 
-      const userId = (req as AuthenticatedRequest).user.userId;
+      const userId = getAuthenticatedUserId(req);
       const data = await inventoryService.issue(parsed.data, userId);
 
       return res.status(200).json({
@@ -81,7 +83,7 @@ export const inventoryController = {
         });
       }
 
-      const userId = (req as AuthenticatedRequest).user.userId;
+      const userId = getAuthenticatedUserId(req);
       const data = await inventoryService.transfer(parsed.data, userId);
 
       return res.status(200).json({
@@ -106,7 +108,7 @@ export const inventoryController = {
         });
       }
 
-      const userId = (req as AuthenticatedRequest).user.userId;
+      const userId = getAuthenticatedUserId(req);
       const data = await inventoryService.adjust(parsed.data, userId);
 
       return res.status(200).json({
@@ -131,7 +133,7 @@ export const inventoryController = {
         });
       }
 
-      const userId = (req as AuthenticatedRequest).user.userId;
+      const userId = getAuthenticatedUserId(req);
       const data = await inventoryService.count(parsed.data, userId);
 
       return res.status(200).json({

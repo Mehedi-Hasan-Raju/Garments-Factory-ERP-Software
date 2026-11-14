@@ -1,16 +1,17 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  getDashboardOverview,
-  type DashboardRange,
-} from "@/services/dashboard.service";
 
-export function useDashboard(range: DashboardRange = "30d") {
+import { dashboardService } from "@/services/dashboard.service";
+import type { DashboardQuery } from "@/types/dashboard";
+
+export const DASHBOARD_QUERY_KEY = ["dashboard"];
+
+export function useOwnerDashboard(query: DashboardQuery) {
   return useQuery({
-    queryKey: ["dashboard", "overview", range],
-    queryFn: () => getDashboardOverview(range, 8),
+    queryKey: [...DASHBOARD_QUERY_KEY, "OWNER", query],
+    queryFn: () => dashboardService.getOverview(query),
     staleTime: 60 * 1000,
-    retry: false,
+    retry: 1,
   });
 }

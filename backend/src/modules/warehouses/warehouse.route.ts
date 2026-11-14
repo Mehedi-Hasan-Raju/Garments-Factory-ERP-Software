@@ -40,7 +40,7 @@ router.patch(
   "/:id",
   authenticate,
   doubleCsrfProtection,
-  allowRoles("OWNER", "ADMIN"),
+  allowRoles("OWNER", "ADMIN","MANAGER",),
   warehouseController.update,
 );
 

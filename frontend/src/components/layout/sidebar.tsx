@@ -45,9 +45,9 @@ const navigation = [
   {
     title: "OPERATIONS",
     items: [
-      { label: "Inventory", href: "/dashboard/inventory", icon: Package, available: false },
-      { label: "Warehouse", href: "/dashboard/warehouse", icon: Warehouse, available: false },
-      { label: "Stock Movement", href: "/dashboard/stock-movement", icon: ArrowDownUp, available: false },
+      { label: "Inventory", href: "/dashboard/inventory", icon: Package, available: true },
+      { label: "Warehouse", href: "/dashboard/warehouse", icon: Warehouse, available: true },
+      { label: "Stock Movement", href: "/dashboard/stock-movement", icon: ArrowDownUp, available: true },
       { label: "Procurement", href: "/dashboard/procurement", icon: ShoppingCart, available: false },
       { label: "Production", href: "/dashboard/production", icon: Factory, available: false },
       { label: "Quality Control", href: "/dashboard/quality-control", icon: ClipboardList, available: false },
@@ -58,7 +58,7 @@ const navigation = [
   {
     title: "MANAGEMENT",
     items: [
-      { label: "Suppliers", href: "/dashboard/suppliers", icon: Building2, available: false },
+      { label: "Suppliers", href: "/dashboard/suppliers", icon: Building2, available: true },
       { label: "Buying Houses", href: "/dashboard/buying-houses", icon: PackageSearch, available: false },
       { label: "Employees", href: "/dashboard/employees", icon: Users, available: false },
     ],

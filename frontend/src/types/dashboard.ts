@@ -1,36 +1,34 @@
-export type ProductionStatus =
-  | "PENDING"
-  | "CUTTING"
-  | "SEWING"
-  | "QC"
-  | "COMPLETED"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
+import type { UserRole } from "@/types/auth";
 
-export interface DashboardProduction {
-  totalOrders: number;
-  byStatus: Partial<Record<ProductionStatus, number>>;
-  cuttingQuantity: string;
-  sewingQuantity: string;
-  rejectedQuantity: string;
+export type DashboardRange = "7d" | "30d" | "90d";
+
+export interface DashboardQuery {
+  range: DashboardRange;
+  recentLimit: number;
 }
 
-export interface DashboardInventory {
-  productCount: number;
-  warehouseCount: number;
-  stockRecordCount: number;
-  totalStockQuantity: string;
-  lowStockCount: number;
+export interface DashboardNotification {
+  id: string;
+  title: string;
+  message: string;
+  type: string;
+  actionUrl: string | null;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface DashboardNotifications {
+  unreadCount: number;
+  recentNotifications: DashboardNotification[];
 }
 
 export interface RecentProductionOrder {
   id: string;
   orderNumber: string;
   styleNumber: string;
-  status: ProductionStatus;
+  status: string;
   shipmentStatus: string;
-  orderQuantity: string;
+  orderQuantity: number;
   deliveryDate: string;
   createdAt: string;
   buyingHouse: {
@@ -63,44 +61,50 @@ export interface RecentStockMovement {
   } | null;
 }
 
-export interface DashboardOverview {
-  role: string;
-  generatedAt: string;
-  range: "7d" | "30d" | "90d";
-  data: {
-    users?: { total: number };
-    employees?: { total?: number; active?: number };
-    departments?: { active: number };
-    managers?: { active: number };
-    warehouses?: { active: number };
-    products?: { active: number };
-    inventory?: DashboardInventory;
-    production?: DashboardProduction | {
-      activeOrders: number;
-    };
-    purchasing?: {
-      totalPurchaseOrders: number;
-      pendingApproval?: number;
-    };
-    shipments?: number | Record<string, number>;
-    recent?: {
-      productionOrders?: RecentProductionOrder[];
-      stockMovements?: RecentStockMovement[];
-    };
-    notifications?: {
-      unreadCount: number;
-      recentNotifications: Array<{
-        id: string;
-        title: string;
-        message: string;
-        type: string;
-        actionUrl: string | null;
-        isRead: boolean;
-        createdAt: string;
-      }>;
-    };
-    [key: string]: unknown;
+export interface OwnerDashboardData {
+  users: {
+    total: number;
   };
+  employees: {
+    total: number;
+    active: number;
+  };
+  departments: {
+    active: number;
+  };
+  inventory: {
+    productCount: number;
+    warehouseCount: number;
+    stockRecordCount: number;
+    totalStockQuantity: string;
+    lowStockCount: number;
+  };
+  production: {
+    totalOrders: number;
+    byStatus: Record<string, number>;
+    cuttingQuantity: string;
+    sewingQuantity: string;
+    rejectedQuantity: string;
+  };
+  purchasing: {
+    totalPurchaseOrders: number;
+    pendingApproval: number;
+  };
+  shipments: {
+    total: number;
+  };
+  recent: {
+    productionOrders: RecentProductionOrder[];
+    stockMovements: RecentStockMovement[];
+  };
+  notifications: DashboardNotifications;
+}
+
+export interface DashboardOverviewResponse<T> {
+  role: UserRole;
+  generatedAt: string;
+  range: DashboardRange;
+  data: T;
 }
 
 export interface ApiResponse<T> {

@@ -19,6 +19,7 @@ import {
   ClipboardCheck,
   Bell,
   Settings,
+  FolderTree,
 } from "lucide-react";
 
 import type { UserRole } from "@/types/auth";
@@ -46,7 +47,6 @@ const dashboard = (role: UserRole): NavigationGroup => ({
   ],
 });
 
-
 const comingSoon = true;
 
 export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
@@ -63,8 +63,14 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Operations",
       items: [
-        { label: "Warehouses", href: "/warehouses", icon: Warehouse, disabled: comingSoon },
-        { label: "Inventory", href: "/inventory", icon: Boxes, disabled: comingSoon },
+        { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
+        { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
+        {
+          label: "Product Categories",
+          href: "/dashboard/inventory/categories",
+          icon: FolderTree,
+          disabled: false,
+        },
         { label: "Purchase Orders", href: "/purchase-orders", icon: ShoppingCart, disabled: comingSoon },
         { label: "Production", href: "/production", icon: ClipboardList, disabled: comingSoon },
         { label: "Cutting", href: "/cutting", icon: Scissors, disabled: comingSoon },
@@ -106,8 +112,8 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Operations",
       items: [
-        { label: "Warehouses", href: "/warehouses", icon: Warehouse, disabled: comingSoon },
-        { label: "Inventory", href: "/inventory", icon: Boxes, disabled: comingSoon },
+        { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
+        { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
         { label: "Purchase Orders", href: "/purchase-orders", icon: ShoppingCart, disabled: comingSoon },
       ],
     },
@@ -135,8 +141,14 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Warehouse",
       items: [
-        { label: "Warehouses", href: "/warehouses", icon: Warehouse, disabled: comingSoon },
-        { label: "Inventory", href: "/inventory", icon: Boxes, disabled: comingSoon },
+        { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
+        { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
+        {
+          label: "Product Categories",
+          href: "/dashboard/inventory/categories",
+          icon: FolderTree,
+          disabled: comingSoon,
+        },
       ],
     },
   ],
@@ -159,8 +171,8 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Warehouse",
       items: [
-        { label: "Warehouses", href: "/warehouses", icon: Warehouse, disabled: comingSoon },
-        { label: "Inventory", href: "/inventory", icon: Boxes, disabled: comingSoon },
+        { label: "Warehouses", href: "/dashboard/inventory/warehouse", icon: Warehouse, disabled: false },
+        { label: "Inventory", href: "/dashboard/inventory", icon: Boxes, disabled: false },
         { label: "Stock Operations", href: "/stock-operations", icon: ClipboardList, disabled: comingSoon },
         { label: "Finished Goods", href: "/finished-goods", icon: PackageCheck, disabled: comingSoon },
       ],

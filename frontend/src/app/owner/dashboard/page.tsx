@@ -1,11 +1,13 @@
-import RoleDashboardPage from "@/components/dashboard/role-dashboard-page";
+import RoleGuard from "@/components/auth/role-guard";
+import { DashboardShell } from "@/components/layout/dashboard-shell";
+import OwnerDashboardContent from "@/components/dashboard/owner-dashboard-content";
 
 export default function OwnerDashboard() {
   return (
-    <RoleDashboardPage
-      role="OWNER"
-      title="Owner Dashboard"
-      description="Complete factory overview, business performance and system management."
-    />
+    <RoleGuard allowedRoles={["OWNER"]}>
+      <DashboardShell>
+        <OwnerDashboardContent />
+      </DashboardShell>
+    </RoleGuard>
   );
 }

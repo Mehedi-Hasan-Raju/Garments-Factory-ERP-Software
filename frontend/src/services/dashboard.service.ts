@@ -1,23 +1,20 @@
 import { apiClient } from "@/lib/api-client";
+
 import type {
   ApiResponse,
-  DashboardOverview,
+  DashboardOverviewResponse,
+  DashboardQuery,
+  OwnerDashboardData,
 } from "@/types/dashboard";
 
-export type DashboardRange = "7d" | "30d" | "90d";
+export const dashboardService = {
+  async getOverview(query: DashboardQuery) {
+    const response = await apiClient.get<
+      ApiResponse<DashboardOverviewResponse<OwnerDashboardData>>
+    >("/dashboard/overview", {
+      params: query,
+    });
 
-export async function getDashboardOverview(
-  range: DashboardRange = "30d",
-  recentLimit = 5,
-): Promise<DashboardOverview> {
-  const response = await apiClient.get<
-    ApiResponse<DashboardOverview>
-  >("/dashboard/overview", {
-    params: {
-      range,
-      recentLimit,
-    },
-  });
-
-  return response.data.data;
-}
+    return response.data.data;
+  },
+};
