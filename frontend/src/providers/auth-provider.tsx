@@ -44,14 +44,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   if (isPending) {
     status = "loading";
-  } else if (user) {
-    status = "authenticated";
   } else if (isError) {
     const statusCode = axios.isAxiosError(error)
       ? error.response?.status
       : undefined;
 
-    status = statusCode === 401 ? "unauthenticated" : "error";
+    if (statusCode === 401) {
+      status = "unauthenticated";
+    } else {
+      status = user ? "authenticated" : "error";
+    }
+  } else if (user) {
+    status = "authenticated";
   } else {
     status = "unauthenticated";
   }
