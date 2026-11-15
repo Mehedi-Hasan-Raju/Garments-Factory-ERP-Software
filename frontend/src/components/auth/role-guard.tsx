@@ -54,7 +54,16 @@ export default function RoleGuard({
   }
 
   if (!user || !hasAccess) {
-    return null;
+    return (
+      <div
+        className="flex min-h-[50vh] items-center justify-center text-sm text-muted-foreground"
+        role="status"
+      >
+        {user
+          ? "You do not have permission to view this page. Redirecting to your dashboard..."
+          : "Redirecting to login..."}
+      </div>
+    );
   }
 
   return <>{children}</>;

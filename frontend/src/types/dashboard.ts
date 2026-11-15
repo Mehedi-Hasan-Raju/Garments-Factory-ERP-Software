@@ -112,3 +112,50 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+
+
+export interface AdminDashboardData {
+  managers: {
+    active: number;
+  };
+
+  employees: {
+    total: number;
+    active: number;
+  };
+
+  departments: {
+    active: number;
+  };
+
+  warehouses: {
+    active: number;
+  };
+
+  products: {
+    active: number;
+  };
+
+  inventory: {
+    productCount: number;
+    warehouseCount: number;
+    stockRecordCount: number;
+    totalStockQuantity: string;
+    lowStockCount: number;
+  };
+
+  purchasing: {
+    totalPurchaseOrders: number;
+    pendingApproval: number;
+  };
+
+  production: {
+    activeOrders: number;
+  };
+
+  recent: {
+    productionOrders: RecentProductionOrder[];
+  };
+
+  notifications: DashboardNotifications;
+}

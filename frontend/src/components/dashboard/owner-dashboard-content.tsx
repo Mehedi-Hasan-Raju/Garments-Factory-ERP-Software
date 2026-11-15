@@ -34,7 +34,7 @@ const stats = [
     key: "stock",
     label: "Stock Available",
     icon: Boxes,
-    iconClass: "bg-sky-50 text-sky-600",
+    iconClass: "bg-[#E8F0DF] text-[#6B9B70]",
   },
   {
     key: "orders",
@@ -87,15 +87,15 @@ function StatusBadge({ status }: { status: string }) {
   const normalized = status.toUpperCase();
 
   const styles: Record<string, string> = {
-    COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-    DELIVERED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-    PENDING: "bg-amber-50 text-amber-700 ring-amber-600/20",
-    CUTTING: "bg-sky-50 text-sky-700 ring-sky-600/20",
-    SEWING: "bg-violet-50 text-violet-700 ring-violet-600/20",
-    QC: "bg-orange-50 text-orange-700 ring-orange-600/20",
-    SHIPPED: "bg-cyan-50 text-cyan-700 ring-cyan-600/20",
-    CANCELLED: "bg-red-50 text-red-700 ring-red-600/20",
-  };
+  COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  DELIVERED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
+  PENDING: "bg-amber-50 text-amber-700 ring-amber-600/20",
+  CUTTING: "bg-[#E8F0DF] text-[#527D57] ring-[#6B9B70]/20",
+  SEWING: "bg-violet-50 text-violet-700 ring-violet-600/20",
+  QC: "bg-orange-50 text-orange-700 ring-orange-600/20",
+  SHIPPED: "bg-[#F0EDE5] text-[#8B7650] ring-[#B49A69]/20",
+  CANCELLED: "bg-red-50 text-red-700 ring-red-600/20",
+};
 
   return (
     <span
@@ -180,35 +180,35 @@ export default function OwnerDashboardContent() {
   };
 
   const summaryCards = [
-    {
-      label: "Low Stock Products",
-      value: formatNumber(dashboard.inventory.lowStockCount),
-      description: "Below stock threshold",
-      icon: AlertTriangle,
-      iconClass: "bg-amber-50 text-amber-600",
-    },
-    {
-      label: "Warehouses",
-      value: formatNumber(dashboard.inventory.warehouseCount),
-      description: "Registered warehouses",
-      icon: Warehouse,
-      iconClass: "bg-sky-50 text-sky-600",
-    },
-    {
-      label: "Recent Shipments",
-      value: formatNumber(dashboard.shipments.total),
-      description: "Total shipment records",
-      icon: Truck,
-      iconClass: "bg-emerald-50 text-emerald-600",
-    },
-    {
-      label: "Pending Purchase Orders",
-      value: formatNumber(dashboard.purchasing.pendingApproval),
-      description: "Awaiting approval",
-      icon: ShoppingCart,
-      iconClass: "bg-violet-50 text-violet-600",
-    },
-  ];
+  {
+    label: "Low Stock Products",
+    value: formatNumber(dashboard.inventory.lowStockCount),
+    description: "Below stock threshold",
+    icon: AlertTriangle,
+    iconClass: "bg-amber-50 text-amber-600",
+  },
+  {
+    label: "Warehouses",
+    value: formatNumber(dashboard.inventory.warehouseCount),
+    description: "Registered warehouses",
+    icon: Warehouse,
+    iconClass: "bg-[#E8F0DF] text-[#6B9B70]",
+  },
+  {
+    label: "Recent Shipments",
+    value: formatNumber(dashboard.shipments.total),
+    description: "Total shipment records",
+    icon: Truck,
+    iconClass: "bg-emerald-50 text-emerald-600",
+  },
+  {
+    label: "Pending Purchase Orders",
+    value: formatNumber(dashboard.purchasing.pendingApproval),
+    description: "Awaiting approval",
+    icon: ShoppingCart,
+    iconClass: "bg-orange-50 text-orange-600",
+  },
+];
 
   return (
     <div className="mx-auto w-full max-w-[1600px] space-y-5">

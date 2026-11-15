@@ -1,16 +1,14 @@
 import { apiClient } from "@/lib/api-client";
-
 import type {
   ApiResponse,
   DashboardOverviewResponse,
   DashboardQuery,
-  OwnerDashboardData,
 } from "@/types/dashboard";
 
 export const dashboardService = {
-  async getOverview(query: DashboardQuery) {
+  async getOverview<T>(query: DashboardQuery) {
     const response = await apiClient.get<
-      ApiResponse<DashboardOverviewResponse<OwnerDashboardData>>
+      ApiResponse<DashboardOverviewResponse<T>>
     >("/dashboard/overview", {
       params: query,
     });

@@ -1,11 +1,7 @@
-import RoleDashboardPage from "@/components/dashboard/role-dashboard-page";
+import AdminDashboardClient from "@/components/dashboard/admin-dashboard-client";
+
+export const instant = false;
 
 export default function AdminDashboard() {
-  return (
-    <RoleDashboardPage
-      role="ADMIN"
-      title="Admin Dashboard"
-      description="Manage users, departments, warehouses and factory operations."
-    />
-  );
+  return <AdminDashboardClient />;
 }

@@ -18,18 +18,15 @@ import {
 
 import type { OwnerDashboardData } from "@/types/dashboard";
 
-interface OwnerDashboardChartsProps {
-  dashboard: OwnerDashboardData;
-}
-
+// Blue বাদ দিয়ে standard ERP color palette
 export const STATUS_COLORS = [
-  "#16a34a",
-  "#3b82f6",
-  "#8b5cf6",
-  "#f59e0b",
-  "#ef4444",
-  "#0ea5e9",
-  "#64748b",
+  "#6B9B70", // Green
+  "#D9A441", // Amber
+  "#8B7BB5", // Muted Purple
+  "#D97757", // Orange
+  "#C75C5C", // Red
+  "#91A68A", // Sage
+  "#64748B", // Slate
 ];
 
 const formatNumber = (value: number) =>
@@ -38,9 +35,7 @@ const formatNumber = (value: number) =>
 const formatQuantity = (value: string) => {
   const number = Number(value);
 
-  return Number.isFinite(number)
-    ? formatNumber(number)
-    : value;
+  return Number.isFinite(number) ? formatNumber(number) : value;
 };
 
 function ChartCard({
@@ -73,85 +68,6 @@ function ChartCard({
   );
 }
 
-function MetricChartCard({
-  title,
-  description,
-  value,
-  unit,
-  data,
-  dataKey,
-  nameKey,
-  color,
-}: {
-  title: string;
-  description: string;
-  value: string;
-  unit: string;
-  data: Record<string, string | number>[];
-  dataKey: string;
-  nameKey: string;
-  color: string;
-}) {
-  return (
-    <ChartCard title={title} description={description}>
-      <div className="mb-3 flex items-baseline gap-2">
-        <span className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
-          {value}
-        </span>
-
-        <span className="text-xs text-slate-500 dark:text-slate-400">
-          {unit}
-        </span>
-      </div>
-
-      <div className="h-[190px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={data}
-            margin={{ top: 12, right: 10, left: -15, bottom: 5 }}
-          >
-            <CartesianGrid
-              stroke="#e2e8f0"
-              strokeDasharray="3 5"
-              vertical={false}
-            />
-
-            <XAxis
-              dataKey={nameKey}
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
-              axisLine={false}
-              tickLine={false}
-            />
-
-            <YAxis
-              allowDecimals={false}
-              tick={{ fontSize: 10, fill: "#94a3b8" }}
-              axisLine={false}
-              tickLine={false}
-              width={45}
-            />
-
-            <Tooltip
-              formatter={(value) => [
-                formatNumber(Number(value)),
-                unit,
-              ]}
-            />
-
-            <Bar
-              dataKey={dataKey}
-              name={unit}
-              fill={color}
-              radius={[7, 7, 0, 0]}
-              maxBarSize={65}
-            />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </ChartCard>
-  );
-}
-
 function EmptyChart({ message }: { message: string }) {
   return (
     <div className="flex h-[250px] items-center justify-center rounded-xl bg-slate-50 text-sm text-slate-400 dark:bg-slate-800/50">
@@ -162,18 +78,10 @@ function EmptyChart({ message }: { message: string }) {
 
 export default function OwnerDashboardCharts({
   dashboard,
-}: OwnerDashboardChartsProps) {
-  // Total products
-  const productCount = dashboard.inventory.productCount;
-
-  const productData = [
-    {
-      name: "Products",
-      value: productCount,
-    },
-  ];
-
-  // Total production orders and status breakdown
+}: {
+  dashboard: OwnerDashboardData;
+}) {
+  // Production orders by status
   const totalOrders = dashboard.production.totalOrders;
 
   const productionData = Object.entries(
@@ -183,21 +91,22 @@ export default function OwnerDashboardCharts({
     count,
   }));
 
-  const orderChartData =
-    productionData.length > 0
-      ? productionData
-      : totalOrders > 0
-        ? [{ status: "Total Orders", count: totalOrders }]
-        : [];
-
-  // Available stock quantity
-  const stockQuantity =
-    Number(dashboard.inventory.totalStockQuantity) || 0;
-
-  const stockData = [
+  // Production quantities
+  const productionQuantityData = [
     {
-      name: "Available Stock",
-      quantity: stockQuantity,
+      stage: "Cutting",
+      quantity: Number(dashboard.production.cuttingQuantity) || 0,
+      color: "#6B9B70",
+    },
+    {
+      stage: "Sewing",
+      quantity: Number(dashboard.production.sewingQuantity) || 0,
+      color: "#8B7BB5",
+    },
+    {
+      stage: "Rejected",
+      quantity: Number(dashboard.production.rejectedQuantity) || 0,
+      color: "#D9A441",
     },
   ];
 
@@ -205,104 +114,20 @@ export default function OwnerDashboardCharts({
   const stockRecords = dashboard.inventory.stockRecordCount;
   const lowStock = dashboard.inventory.lowStockCount;
 
-  const healthyStock = Math.max(
-    stockRecords - lowStock,
-    0,
-  );
-
-  const inventoryData = [
-    {
-      name: "Healthy stock",
-      value: healthyStock,
-      color: "#16a34a",
-    },
-    {
-      name: "Low stock",
-      value: lowStock,
-      color: "#f59e0b",
-    },
-  ].filter((item) => item.value > 0);
-
-  // Production quantities
-  const productionQuantityData = [
-    {
-      stage: "Cutting",
-      quantity:
-        Number(dashboard.production.cuttingQuantity) || 0,
-      color: "#16a34a",
-    },
-    {
-      stage: "Sewing",
-      quantity:
-        Number(dashboard.production.sewingQuantity) || 0,
-      color: "#8b5cf6",
-    },
-    {
-      stage: "Rejected",
-      quantity:
-        Number(dashboard.production.rejectedQuantity) || 0,
-      color: "#f59e0b",
-    },
-  ];
+  const healthyStock = Math.max(stockRecords - lowStock, 0);
 
   // Recent stock movements
-  const stockMovements =
-    dashboard.recent.stockMovements ?? [];
+  const stockMovements = dashboard.recent.stockMovements ?? [];
 
   return (
     <div className="space-y-5">
-
-      {/* Main metric charts */}
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-
-        <MetricChartCard
-          title="Total Products"
-          description="Total registered products in inventory"
-          value={formatNumber(productCount)}
-          unit="Products"
-          data={productData}
-          dataKey="value"
-          nameKey="name"
-          color="#6366f1"
-        />
-
-        <MetricChartCard
-          title="Total Orders"
-          description="Production orders grouped by current status"
-          value={formatNumber(totalOrders)}
-          unit="Orders"
-          data={orderChartData.map((item) => ({
-            status: item.status,
-            count: item.count,
-          }))}
-          dataKey="count"
-          nameKey="status"
-          color="#0ea5e9"
-        />
-
-        <MetricChartCard
-          title="Available Stock"
-          description="Total quantity currently recorded in inventory"
-          value={formatQuantity(
-            dashboard.inventory.totalStockQuantity,
-          )}
-          unit="Quantity"
-          data={stockData}
-          dataKey="quantity"
-          nameKey="name"
-          color="#14b8a6"
-        />
-
-      </div>
-
       {/* Production analytics */}
       <div className="grid gap-5 xl:grid-cols-2">
-
         <ChartCard
           title="Production Overview"
-          description="Production orders by their current workflow status"
+          description="Production orders grouped by current workflow status"
         >
-          {totalOrders === 0 ? (
+          {productionData.length === 0 ? (
             <EmptyChart message="No production data available." />
           ) : (
             <div className="relative h-[270px]">
@@ -323,9 +148,7 @@ export default function OwnerDashboardCharts({
                       <Cell
                         key={item.status}
                         fill={
-                          STATUS_COLORS[
-                            index % STATUS_COLORS.length
-                          ]
+                          STATUS_COLORS[index % STATUS_COLORS.length]
                         }
                       />
                     ))}
@@ -360,15 +183,11 @@ export default function OwnerDashboardCharts({
                       className="size-2 rounded-full"
                       style={{
                         backgroundColor:
-                          STATUS_COLORS[
-                            index % STATUS_COLORS.length
-                          ],
+                          STATUS_COLORS[index % STATUS_COLORS.length],
                       }}
                     />
 
-                    <span className="capitalize">
-                      {item.status}
-                    </span>
+                    <span className="capitalize">{item.status}</span>
 
                     <span className="font-semibold text-slate-700 dark:text-slate-300">
                       {item.count}
@@ -382,7 +201,7 @@ export default function OwnerDashboardCharts({
 
         <ChartCard
           title="Production Quantity"
-          description="Recorded cutting, sewing and rejected quantities"
+          description="Cutting, sewing and rejected production quantities"
         >
           {productionQuantityData.every(
             (item) => item.quantity === 0,
@@ -434,10 +253,7 @@ export default function OwnerDashboardCharts({
                     maxBarSize={54}
                   >
                     {productionQuantityData.map((item) => (
-                      <Cell
-                        key={item.stage}
-                        fill={item.color}
-                      />
+                      <Cell key={item.stage} fill={item.color} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -445,21 +261,18 @@ export default function OwnerDashboardCharts({
             </div>
           )}
         </ChartCard>
-
       </div>
 
-      {/* Inventory and stock movement */}
+      {/* Inventory analytics */}
       <div className="grid gap-5 xl:grid-cols-2">
-
         <ChartCard
           title="Inventory Stock Health"
-          description="Low-stock records compared with other stock records"
+          description="Healthy stock records compared with low-stock records"
         >
           {stockRecords === 0 ? (
             <EmptyChart message="No inventory records available." />
           ) : (
             <div className="flex min-h-[230px] flex-col justify-center gap-7 px-1 sm:px-5">
-
               <div>
                 <div className="mb-2 flex items-center justify-between text-xs">
                   <span className="font-medium text-slate-600 dark:text-slate-300">
@@ -473,7 +286,7 @@ export default function OwnerDashboardCharts({
 
                 <div className="h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                   <div
-                    className="h-full rounded-full bg-green-500"
+                    className="h-full rounded-full bg-[#6B9B70]"
                     style={{
                       width: `${Math.min(
                         (healthyStock / stockRecords) * 100,
@@ -497,7 +310,7 @@ export default function OwnerDashboardCharts({
 
                 <div className="h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
                   <div
-                    className="h-full rounded-full bg-amber-500"
+                    className="h-full rounded-full bg-[#D9A441]"
                     style={{
                       width: `${Math.min(
                         (lowStock / stockRecords) * 100,
@@ -517,14 +330,13 @@ export default function OwnerDashboardCharts({
                   {formatNumber(stockRecords)}
                 </span>
               </div>
-
             </div>
           )}
         </ChartCard>
 
         <ChartCard
           title="Recent Stock Movements"
-          description="Latest stock movement records from the backend"
+          description="Latest inventory movement records"
         >
           {stockMovements.length === 0 ? (
             <EmptyChart message="No recent stock movements found." />
@@ -562,7 +374,6 @@ export default function OwnerDashboardCharts({
             </div>
           )}
         </ChartCard>
-
       </div>
     </div>
   );
