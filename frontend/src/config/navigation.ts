@@ -123,7 +123,7 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "System",
       items: [
-        { label: "Notifications", href: "/notifications", icon: Bell, disabled: comingSoon },
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
         { label: "Audit Logs", href: "/audit-logs", icon: ClipboardCheck, disabled: comingSoon },
         { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
       ],
@@ -168,7 +168,7 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
           icon: ShoppingCart,
          disabled: false,
        },
-      ],
+      ],  
     },
     {
       title: "Reports",
@@ -176,6 +176,13 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
         { label: "Reports", href: "/reports", icon: BarChart3, disabled: comingSoon },
       ],
     },
+    {
+      title: "System",
+      items: [
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
+        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+      ],
+    }
   ],
 
   MANAGER: [
@@ -239,6 +246,13 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
        },
       ],
     },
+    {
+      title: "System",
+      items: [
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
+        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+      ],
+    }
   ],
 
   ACCOUNTANT: [
@@ -264,6 +278,13 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
         { label: "Reports", href: "/reports", icon: BarChart3, disabled: comingSoon },
       ],
     },
+    {
+      title: "System",
+      items: [
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
+        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+      ],
+    }
   ],
 
   STOREKEEPER: [
@@ -283,6 +304,13 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
         { label: "Finished Goods", href: "/finished-goods", icon: PackageCheck, disabled: comingSoon },
       ],
     },
+    {
+      title: "System",
+      items: [
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
+        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+      ],
+    }
   ],
 
   EMPLOYEE: [
@@ -293,5 +321,12 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
         { label: "Assigned Work", href: "/employee/tasks", icon: ClipboardCheck, disabled: comingSoon },
       ],
     },
+    {
+      title: "System",
+      items: [
+        { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
+        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+      ],
+    }
   ],
 };
