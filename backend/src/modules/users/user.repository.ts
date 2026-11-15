@@ -1,5 +1,6 @@
-
 import { prisma } from "../../lib/prisma.js";
+
+import type { UserQueryInput } from "./user.validation.js";
 
 export const userRepository = {
   // Find creator with current role
@@ -73,6 +74,79 @@ export const userRepository = {
           },
         },
         createdAt: true,
+      },
+    });
+  },
+
+  // Get users with search, filters and pagination
+  findAll(params: UserQueryInput) {
+    const where = {
+      ...(params.search && {
+        email: {
+          contains: params.search,
+          mode: "insensitive" as const,
+        },
+      }),
+
+      ...(params.roleCode && {
+        role: {
+          code: params.roleCode,
+        },
+      }),
+
+      ...(params.status && {
+        status: params.status,
+      }),
+    };
+
+    return prisma.user.findMany({
+      where,
+
+      skip: (params.page - 1) * params.limit,
+      take: params.limit,
+
+      orderBy: {
+        [params.sortBy]: params.sortOrder,
+      },
+
+      select: {
+        id: true,
+        email: true,
+        status: true,
+        lastLoginAt: true,
+        createdAt: true,
+
+        role: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+          },
+        },
+      },
+    });
+  },
+
+  // Count users matching the same filters
+  count(params: UserQueryInput) {
+    return prisma.user.count({
+      where: {
+        ...(params.search && {
+          email: {
+            contains: params.search,
+            mode: "insensitive" as const,
+          },
+        }),
+
+        ...(params.roleCode && {
+          role: {
+            code: params.roleCode,
+          },
+        }),
+
+        ...(params.status && {
+          status: params.status,
+        }),
       },
     });
   },

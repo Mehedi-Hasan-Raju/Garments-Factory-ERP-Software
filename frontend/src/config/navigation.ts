@@ -56,7 +56,12 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Organization",
       items: [
-        { label: "Users", href: "/users", icon: Users, disabled: comingSoon },
+        {
+         label: "Users",
+          href: "/dashboard/users",
+          icon: Users,
+         disabled: false,
+       },
         { label: "Employees", href: "/employees", icon: UserRound, disabled: comingSoon },
         { label: "Departments", href: "/departments", icon: Building2, disabled: comingSoon },
       ],
@@ -130,7 +135,12 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "Organization",
       items: [
-        { label: "Users", href: "/users", icon: Users, disabled: comingSoon },
+        {
+         label: "Users",
+          href: "/dashboard/users",
+          icon: Users,
+         disabled: false,
+       },
         { label: "Employees", href: "/employees", icon: UserRound, disabled: comingSoon },
         { label: "Departments", href: "/departments", icon: Building2, disabled: comingSoon },
       ],
@@ -170,6 +180,17 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
 
   MANAGER: [
     dashboard("MANAGER"),
+    {
+          title: "Organization",
+      items: [
+        {
+         label: "Users",
+          href: "/dashboard/users",
+          icon: Users,
+         disabled: false,
+       },
+      ],
+    },
     {
       title: "Production",
       items: [

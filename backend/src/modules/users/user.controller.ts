@@ -1,4 +1,3 @@
-
 import type {
   Request,
   Response,
@@ -8,9 +7,14 @@ import type {
 import { AppError } from "../../lib/app-error.js";
 
 import { userService } from "./user.service.js";
-import { createUserSchema } from "./user.validation.js";
+
+import {
+  createUserSchema,
+  userQuerySchema,
+} from "./user.validation.js";
 
 export const userController = {
+  // Create user account
   async createUser(
     req: Request,
     res: Response,
@@ -49,6 +53,41 @@ export const userController = {
         data: {
           user,
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  // Get all users
+  async findAll(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const validation = userQuerySchema.safeParse(
+        req.query,
+      );
+
+      if (!validation.success) {
+        res.status(400).json({
+          success: false,
+          message: "Invalid query parameters",
+          errors: validation.error.flatten().fieldErrors,
+        });
+        return;
+      }
+
+      const result = await userService.findAll(
+        validation.data,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Users retrieved successfully",
+        data: result.users,
+        pagination: result.pagination,
       });
     } catch (error) {
       next(error);

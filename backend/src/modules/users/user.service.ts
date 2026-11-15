@@ -1,11 +1,14 @@
-
 import bcrypt from "bcrypt";
 
 import { AppError } from "../../lib/app-error.js";
 import { AUTH_CONSTANTS } from "../auth/auth.constant.js";
 
 import { userRepository } from "./user.repository.js";
-import type { CreateUserInput } from "./user.validation.js";
+
+import type {
+  CreateUserInput,
+  UserQueryInput,
+} from "./user.validation.js";
 
 // Account creation hierarchy
 const ROLE_CREATION_RULES: Record<string, string[]> = {
@@ -33,26 +36,17 @@ export const userService = {
     tokenRoleCode: string,
     input: CreateUserInput,
   ) {
-    
     const creator =
       await userRepository.findCreatorById(creatorId);
 
     if (!creator) {
-      throw new AppError(
-        "Creator account not found",
-        401,
-      );
+      throw new AppError("Creator account not found", 401);
     }
 
-    
     if (creator.status !== "ACTIVE") {
-      throw new AppError(
-        "Your account is not active",
-        403,
-      );
+      throw new AppError("Your account is not active", 403);
     }
 
-    
     if (!creator.role.isActive) {
       throw new AppError(
         "Your assigned role is not active",
@@ -60,7 +54,6 @@ export const userService = {
       );
     }
 
-    
     if (creator.role.code !== tokenRoleCode) {
       throw new AppError(
         "Your role has changed. Please login again",
@@ -68,8 +61,6 @@ export const userService = {
       );
     }
 
-   
-   
     const allowedRoles =
       ROLE_CREATION_RULES[creator.role.code] || [];
 
@@ -80,11 +71,8 @@ export const userService = {
       );
     }
 
-   
     const targetRole =
-      await userRepository.findRoleByCode(
-        input.roleCode,
-      );
+      await userRepository.findRoleByCode(input.roleCode);
 
     if (!targetRole || !targetRole.isActive) {
       throw new AppError(
@@ -93,11 +81,8 @@ export const userService = {
       );
     }
 
-   
     const existingUser =
-      await userRepository.findUserByEmail(
-        input.email,
-      );
+      await userRepository.findUserByEmail(input.email);
 
     if (existingUser) {
       throw new AppError(
@@ -106,23 +91,18 @@ export const userService = {
       );
     }
 
-    
     const passwordHash = await bcrypt.hash(
       input.password,
       AUTH_CONSTANTS.BCRYPT_SALT_ROUNDS,
     );
 
-   
     try {
-      const user = await userRepository.createUser({
+      return await userRepository.createUser({
         email: input.email,
         passwordHash,
         roleId: targetRole.id,
       });
-
-      return user;
     } catch (error) {
-    
       if (
         typeof error === "object" &&
         error !== null &&
@@ -137,5 +117,24 @@ export const userService = {
 
       throw error;
     }
+  },
+
+  // Get users with pagination
+  async findAll(params: UserQueryInput) {
+    const [users, total] = await Promise.all([
+      userRepository.findAll(params),
+      userRepository.count(params),
+    ]);
+
+    return {
+      users,
+
+      pagination: {
+        page: params.page,
+        limit: params.limit,
+        total,
+        totalPages: Math.ceil(total / params.limit),
+      },
+    };
   },
 };
