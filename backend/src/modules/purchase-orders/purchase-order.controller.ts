@@ -11,8 +11,7 @@ import {
 } from "./purchase-order.validation.js";
 
 function getUserId(req: Request): string {
-  const user = (req as any).user;
-  const userId = user?.id ?? user?.userId;
+  const userId = req.authUser?.id;
 
   if (!userId) {
     throw new AppError("Authenticated user ID not found", 401);
