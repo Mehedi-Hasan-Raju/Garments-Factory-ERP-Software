@@ -82,6 +82,21 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
+function supplierToForm(supplier: Supplier): CreateSupplierInput {
+  return {
+    supplierCode: supplier.supplierCode,
+    supplierName: supplier.supplierName,
+    companyName: supplier.companyName,
+    contactPerson: supplier.contactPerson ?? "",
+    phone: supplier.phone,
+    email: supplier.email ?? "",
+    address: supplier.address ?? "",
+    supplierType: supplier.supplierType,
+    rawMaterialTypes: supplier.rawMaterialTypes,
+    notes: supplier.notes ?? "",
+  };
+}
+
 function StatusBadge({ active }: { active: boolean }) {
   return (
     <span
@@ -154,24 +169,15 @@ export default function SuppliersPage() {
 
   function openEdit(supplier: Supplier) {
     setSelectedSupplier(supplier);
-    setForm({
-      supplierCode: supplier.supplierCode,
-      supplierName: supplier.supplierName,
-      companyName: supplier.companyName,
-      contactPerson: supplier.contactPerson ?? "",
-      phone: supplier.phone,
-      email: supplier.email ?? "",
-      address: supplier.address ?? "",
-      supplierType: supplier.supplierType,
-      rawMaterialTypes: supplier.rawMaterialTypes,
-      notes: supplier.notes ?? "",
-    });
+    setForm(supplierToForm(supplier));
     setErrors({});
     setMode("edit");
   }
 
   function openView(supplier: Supplier) {
     setSelectedSupplier(supplier);
+    setForm(supplierToForm(supplier));
+    setErrors({});
     setMode("view");
   }
 

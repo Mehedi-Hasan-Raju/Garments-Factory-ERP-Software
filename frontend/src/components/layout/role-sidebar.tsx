@@ -35,6 +35,20 @@ export default function RoleSidebar({
   if (!role) return null;
 
   const navigation = ROLE_NAVIGATION[role];
+  const activeHref = navigation
+    .flatMap((group) => group.items)
+    .filter(
+      (item) =>
+        pathname === item.href ||
+        pathname.startsWith(`${item.href}/`),
+    )
+    .reduce<string | null>(
+      (current, item) =>
+        current === null || item.href.length > current.length
+          ? item.href
+          : current,
+      null,
+    );
 
   return (
     <>
@@ -109,10 +123,7 @@ export default function RoleSidebar({
               <div className="space-y-1">
                 {group.items.map((item) => {
                   const Icon = item.icon;
-
-                  const isActive =
-                    pathname === item.href ||
-                    pathname.startsWith(`${item.href}/`);
+                  const isActive = item.href === activeHref;
 
                   const className = cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
