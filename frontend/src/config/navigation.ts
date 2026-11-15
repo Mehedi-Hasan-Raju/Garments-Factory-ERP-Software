@@ -102,30 +102,34 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
          icon: ShoppingCart,
          disabled: false,
         },
-        
-        { label: "Production", href: "/production", icon: ClipboardList, disabled: comingSoon },
-        { label: "Cutting", href: "/cutting", icon: Scissors, disabled: comingSoon },
-        { label: "Sewing", href: "/sewing", icon: Shirt, disabled: comingSoon },
-        { label: "Quality Control", href: "/quality-control", icon: BadgeCheck, disabled: comingSoon },
-        { label: "Finished Goods", href: "/finished-goods", icon: PackageCheck, disabled: comingSoon },
-        { label: "Shipments", href: "/shipments", icon: Truck, disabled: comingSoon },
+      ],
+    },
+    {
+      title: "Factory Operations",
+      items: [
+        { label: "Production", href: "/dashboard/production-orders", icon: ClipboardList, disabled: false },
+        { label: "Cutting", href: "/dashboard/cutting", icon: Scissors, disabled: comingSoon },
+        { label: "Sewing", href: "/dashboard/sewing", icon: Shirt, disabled: comingSoon },
+        { label: "Quality Control", href: "/dashboard/quality-control", icon: BadgeCheck, disabled: comingSoon },
+        { label: "Finished Goods", href: "/dashboard/finished-goods", icon: PackageCheck, disabled: comingSoon },
+        { label: "Shipments", href: "/dashboard/shipments", icon: Truck, disabled: comingSoon },
       ],
     },
     {
       title: "Finance & Reports",
       items: [
-        { label: "Payroll", href: "/payroll", icon: Wallet, disabled: comingSoon },
-        { label: "Supplier Payments", href: "/supplier-payments", icon: Receipt, disabled: comingSoon },
-        { label: "Cash Management", href: "/cash-management", icon: Wallet, disabled: true },
-        { label: "Reports", href: "/reports", icon: BarChart3, disabled: comingSoon },
+        { label: "Payroll", href: "/dashboard/payroll", icon: Wallet, disabled: comingSoon },
+        { label: "Supplier Payments", href: "/dashboard/supplier-payments", icon: Receipt, disabled: comingSoon },
+        { label: "Cash Management", href: "/dashboard/cash-management", icon: Wallet, disabled: true },
+        { label: "Reports", href: "/dashboard/reports", icon: BarChart3, disabled: comingSoon },
       ],
     },
     {
       title: "System",
       items: [
         { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
-        { label: "Audit Logs", href: "/audit-logs", icon: ClipboardCheck, disabled: comingSoon },
-        { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
+        { label: "Audit Logs", href: "/dashboard/audit-logs", icon: ClipboardCheck, disabled: false },
+        { label: "Settings", href: "/dashboard/settings", icon: Settings, disabled: comingSoon },
       ],
     },
   ],
@@ -179,6 +183,7 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
     {
       title: "System",
       items: [
+        { label: "Audit Logs", href: "/dashboard/audit-logs", icon: ClipboardCheck, disabled: false },
         { label: "Notifications", href: "/dashboard/notifications", icon: Bell, disabled: false },
         { label: "Settings", href: "/settings", icon: Settings, disabled: comingSoon },
       ],
