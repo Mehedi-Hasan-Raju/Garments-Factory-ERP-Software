@@ -40,12 +40,12 @@ const purchaseOrderStatuses: PurchaseOrderStatus[] = [
 ];
 
 const statusStyles: Record<PurchaseOrderStatus, string> = {
-  DRAFT: "bg-gray-100 text-gray-700",
-  PENDING_APPROVAL: "bg-amber-50 text-amber-700",
-  APPROVED: "bg-green-100 text-green-800",
-  PARTIALLY_RECEIVED: "bg-emerald-50 text-emerald-700",
-  RECEIVED: "bg-green-200 text-green-900",
-  CANCELLED: "bg-red-50 text-red-700",
+  DRAFT: "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground",
+  PENDING_APPROVAL: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  APPROVED: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
+  PARTIALLY_RECEIVED: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  RECEIVED: "bg-green-200 text-green-900 dark:bg-green-950 dark:text-green-200",
+  CANCELLED: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 const statusLabels: Record<PurchaseOrderStatus, string> = {
@@ -126,10 +126,10 @@ export default function PurchaseOrdersPage() {
     <div className="space-y-6 p-4 md:p-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-foreground">
             Purchase Orders
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-muted-foreground">
             Manage supplier purchases and incoming materials.
           </p>
         </div>
@@ -163,12 +163,12 @@ export default function PurchaseOrdersPage() {
         />
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+      <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-[#2B4033] dark:bg-[#17251E]">
         <div className="mb-4 flex flex-col gap-3 md:flex-row">
           <div className="relative flex-1">
             <Search
               size={17}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-muted-foreground"
             />
             <input
               value={search}
@@ -177,7 +177,7 @@ export default function PurchaseOrdersPage() {
                 setPage(1);
               }}
               placeholder="Search PO number..."
-              className="h-10 w-full rounded-lg border border-gray-200 bg-transparent pl-10 pr-3 text-sm outline-none focus:border-[#6B9B70] dark:border-gray-700"
+              className="h-10 w-full rounded-lg border border-gray-200 bg-transparent pl-10 pr-3 text-sm outline-none focus:border-[#6B9B70] dark:border-[#2B4033]"
             />
           </div>
 
@@ -187,7 +187,7 @@ export default function PurchaseOrdersPage() {
               setStatus(event.target.value as PurchaseOrderStatus | "");
               setPage(1);
             }}
-            className="h-10 rounded-lg border border-gray-200 bg-white px-3 text-sm dark:border-gray-700 dark:bg-gray-950"
+            className="h-10 rounded-lg border border-gray-200 bg-white px-3 text-sm dark:border-[#2B4033] dark:bg-[#17251E]"
           >
             <option value="">All Statuses</option>
             {purchaseOrderStatuses.map((value) => (
@@ -199,12 +199,12 @@ export default function PurchaseOrdersPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-16 text-center text-sm text-gray-500">
+          <div className="py-16 text-center text-sm text-gray-500 dark:text-muted-foreground">
             Loading purchase orders...
           </div>
         ) : isError ? (
           <div className="py-16 text-center">
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-red-600 dark:text-red-300">
               Failed to load purchase orders.
             </p>
             <button
@@ -220,7 +220,7 @@ export default function PurchaseOrdersPage() {
               size={32}
               className="mx-auto mb-3 text-gray-400"
             />
-            <p className="font-medium text-gray-800 dark:text-white">
+            <p className="font-medium text-gray-800 dark:text-foreground">
               No purchase orders found
             </p>
             <p className="mt-1 text-sm text-gray-500">
@@ -232,7 +232,7 @@ export default function PurchaseOrdersPage() {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[850px] text-left text-sm">
                 <thead>
-                  <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 dark:border-gray-800">
+                  <tr className="border-b border-gray-200 text-xs uppercase text-gray-500 dark:border-[#2B4033] dark:text-muted-foreground">
                     <th className="px-3 py-3">PO Number</th>
                     <th className="px-3 py-3">Supplier</th>
                     <th className="px-3 py-3">Warehouse</th>
@@ -247,9 +247,9 @@ export default function PurchaseOrdersPage() {
                   {rows.map((po) => (
                     <tr
                       key={po.id}
-                      className="border-b border-gray-100 last:border-0 hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900"
+                      className="border-b border-gray-100 last:border-0 hover:bg-gray-50 dark:border-[#2B4033] dark:hover:bg-[#21372A]"
                     >
-                      <td className="px-3 py-4 font-medium text-gray-900 dark:text-white">
+                      <td className="px-3 py-4 font-medium text-gray-900 dark:text-foreground">
                         {po.poNumber}
                       </td>
                       <td className="px-3 py-4">
@@ -355,8 +355,8 @@ export default function PurchaseOrdersPage() {
               </table>
             </div>
 
-            <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-gray-800">
-              <p className="text-xs text-gray-500">
+            <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4 dark:border-[#2B4033]">
+              <p className="text-xs text-gray-500 dark:text-muted-foreground">
                 Page {pagination?.page ?? page} of{" "}
                 {pagination?.totalPages ?? 1}
               </p>
@@ -365,7 +365,7 @@ export default function PurchaseOrdersPage() {
                 <button
                   disabled={page <= 1}
                   onClick={() => setPage((current) => current - 1)}
-                  className="rounded-lg border p-2 disabled:opacity-40 dark:border-gray-700"
+                  className="rounded-lg border border-gray-200 p-2 hover:bg-gray-50 disabled:opacity-40 dark:border-[#2B4033] dark:hover:bg-[#21372A]"
                 >
                   <ChevronLeft size={17} />
                 </button>
@@ -374,7 +374,7 @@ export default function PurchaseOrdersPage() {
                     page >= (pagination?.totalPages ?? 1)
                   }
                   onClick={() => setPage((current) => current + 1)}
-                  className="rounded-lg border p-2 disabled:opacity-40 dark:border-gray-700"
+                  className="rounded-lg border border-gray-200 p-2 hover:bg-gray-50 disabled:opacity-40 dark:border-[#2B4033] dark:hover:bg-[#21372A]"
                 >
                   <ChevronRight size={17} />
                 </button>
@@ -424,12 +424,12 @@ function SummaryCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+    <div className="rounded-xl border border-gray-200 bg-white p-4 dark:border-[#2B4033] dark:bg-[#17251E]">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-gray-500">{label}</p>
+        <p className="text-sm text-gray-500 dark:text-muted-foreground">{label}</p>
         <span className="text-[#6B9B70]">{icon}</span>
       </div>
-      <p className="mt-3 text-2xl font-semibold text-gray-900 dark:text-white">
+      <p className="mt-3 text-2xl font-semibold text-gray-900 dark:text-foreground">
         {value}
       </p>
     </div>
@@ -451,7 +451,7 @@ function ActionButton({
       title={title}
       aria-label={title}
       onClick={onClick}
-      className="rounded-md p-2 text-gray-500 transition hover:bg-green-50 hover:text-[#58845D] dark:hover:bg-gray-800"
+      className="rounded-md p-2 text-gray-500 transition hover:bg-green-50 hover:text-[#58845D] dark:text-muted-foreground dark:hover:bg-[#294534] dark:hover:text-emerald-300"
     >
       {children}
     </button>

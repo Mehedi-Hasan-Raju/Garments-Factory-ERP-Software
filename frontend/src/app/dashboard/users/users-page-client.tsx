@@ -41,13 +41,13 @@ const ROLE_LABELS: Record<UserRoleCode, string> = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  ACTIVE: "bg-green-100 text-green-700",
-  DISABLED: "bg-gray-100 text-gray-700",
-  LOCKED: "bg-red-100 text-red-700",
+  ACTIVE: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+  DISABLED: "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground",
+  LOCKED: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 const inputClass =
-  "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-800 outline-none transition focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/15";
+  "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none transition focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/15";
 
 const buttonClass =
   "inline-flex items-center justify-center gap-2 rounded-lg bg-[#6B9B70] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#56845c] disabled:cursor-not-allowed disabled:opacity-50";
@@ -191,11 +191,11 @@ export default function UsersPage() {
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-foreground">
             User Management
           </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             Manage user accounts and monitor account information.
           </p>
         </div>
@@ -219,50 +219,50 @@ export default function UsersPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total Users</p>
-              <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+              <p className="text-sm text-muted-foreground">Total Users</p>
+              <h2 className="mt-2 text-2xl font-semibold text-foreground">
                 {pagination?.total ?? "—"}
               </h2>
             </div>
 
-            <div className="rounded-lg bg-[#E8F0DF] p-3 text-[#56845c]">
+            <div className="rounded-lg bg-[#E8F0DF] p-3 text-[#56845c] dark:bg-emerald-950 dark:text-emerald-300">
               <Users size={22} />
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Active Users on This Page
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+              <h2 className="mt-2 text-2xl font-semibold text-foreground">
                 {isLoading ? "—" : activeUsersOnPage}
               </h2>
             </div>
 
-            <div className="rounded-lg bg-green-50 p-3 text-green-600">
+            <div className="rounded-lg bg-green-50 p-3 text-green-600 dark:bg-green-950 dark:text-green-300">
               <UserCheck size={22} />
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Roles on This Page
               </p>
-              <h2 className="mt-2 text-2xl font-semibold text-gray-900">
+              <h2 className="mt-2 text-2xl font-semibold text-foreground">
                 {isLoading ? "—" : rolesOnPage}
               </h2>
             </div>
 
-            <div className="rounded-lg bg-[#E8F0DF] p-3 text-[#56845c]">
+            <div className="rounded-lg bg-[#E8F0DF] p-3 text-[#56845c] dark:bg-emerald-950 dark:text-emerald-300">
               <ShieldCheck size={22} />
             </div>
           </div>
@@ -271,13 +271,13 @@ export default function UsersPage() {
 
       {/* Create User Form */}
       {showCreateForm && canCreateUser && (
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-foreground">
               Create New User
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Create an account and assign an authorized role.
             </p>
           </div>
@@ -289,7 +289,7 @@ export default function UsersPage() {
             <div>
               <label
                 htmlFor="user-email"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-sm font-medium text-foreground"
               >
                 Email Address
               </label>
@@ -314,7 +314,7 @@ export default function UsersPage() {
             <div>
               <label
                 htmlFor="user-password"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-sm font-medium text-foreground"
               >
                 Password
               </label>
@@ -341,7 +341,7 @@ export default function UsersPage() {
             <div>
               <label
                 htmlFor="user-role"
-                className="mb-1.5 block text-sm font-medium text-gray-700"
+                className="mb-1.5 block text-sm font-medium text-foreground"
               >
                 Assign Role
               </label>
@@ -371,7 +371,7 @@ export default function UsersPage() {
                 type="button"
                 onClick={handleCloseForm}
                 disabled={createUserMutation.isPending}
-                className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -391,14 +391,14 @@ export default function UsersPage() {
       )}
 
       {/* Users Table */}
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex flex-col gap-4 border-b border-gray-100 p-5 lg:flex-row lg:items-center lg:justify-between">
+      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+        <div className="flex flex-col gap-4 border-b border-border p-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h2 className="font-semibold text-gray-900">
+            <h2 className="font-semibold text-foreground">
               Created User Accounts
             </h2>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Browse and search all registered accounts.
             </p>
           </div>
@@ -407,7 +407,7 @@ export default function UsersPage() {
             type="button"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 transition hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground transition hover:bg-muted disabled:opacity-50"
           >
             <RefreshCw
               size={15}
@@ -418,7 +418,7 @@ export default function UsersPage() {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 gap-3 border-b border-gray-100 p-5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 border-b border-border p-5 md:grid-cols-3">
           <div className="relative">
             <Search
               size={17}
@@ -470,14 +470,14 @@ export default function UsersPage() {
               Failed to load users.
             </p>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               {(error as Error)?.message || "Please try again."}
             </p>
 
             <button
               type="button"
               onClick={() => refetch()}
-              className="mt-4 rounded-lg border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="mt-4 rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
             >
               Try Again
             </button>
@@ -490,7 +490,7 @@ export default function UsersPage() {
             {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
-                className="h-12 animate-pulse rounded-lg bg-gray-100"
+                className="h-12 animate-pulse rounded-lg bg-muted"
               />
             ))}
           </div>
@@ -504,11 +504,11 @@ export default function UsersPage() {
               className="mx-auto text-gray-300"
             />
 
-            <h3 className="mt-3 font-medium text-gray-800">
+            <h3 className="mt-3 font-medium text-foreground">
               No users found
             </h3>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               No accounts match your current search or filters.
             </p>
           </div>
@@ -519,8 +519,8 @@ export default function UsersPage() {
           <>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[700px] text-left">
-                <thead className="bg-[#F7F8F3]">
-                  <tr className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <thead className="bg-muted">
+                  <tr className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     <th className="px-5 py-4">User</th>
                     <th className="px-5 py-4">Role</th>
                     <th className="px-5 py-4">Status</th>
@@ -529,24 +529,24 @@ export default function UsersPage() {
                   </tr>
                 </thead>
 
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-border">
                   {users.map((item) => (
                     <tr
                       key={item.id}
-                      className="transition hover:bg-gray-50/70"
+                      className="transition hover:bg-muted/70"
                     >
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8F0DF] text-sm font-semibold text-[#56845c]">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8F0DF] text-sm font-semibold text-[#56845c] dark:bg-emerald-950 dark:text-emerald-300">
                             {item.email.charAt(0).toUpperCase()}
                           </div>
 
                           <div>
-                            <p className="text-sm font-medium text-gray-800">
+                            <p className="text-sm font-medium text-foreground">
                               {item.email}
                             </p>
 
-                            <p className="mt-0.5 text-xs text-gray-400">
+                            <p className="mt-0.5 text-xs text-muted-foreground">
                               ID: {item.id.slice(0, 8)}
                             </p>
                           </div>
@@ -554,7 +554,7 @@ export default function UsersPage() {
                       </td>
 
                       <td className="px-5 py-4">
-                        <span className="inline-flex rounded-full bg-[#E8F0DF] px-3 py-1 text-xs font-medium text-[#56845c]">
+                        <span className="inline-flex rounded-full bg-[#E8F0DF] px-3 py-1 text-xs font-medium text-[#56845c] dark:bg-emerald-950 dark:text-emerald-300">
                           {ROLE_LABELS[item.role.code] ??
                             item.role.name}
                         </span>
@@ -564,18 +564,18 @@ export default function UsersPage() {
                         <span
                           className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
                             STATUS_STYLES[item.status] ??
-                            "bg-gray-100 text-gray-700"
+                            "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground"
                           }`}
                         >
                           {item.status}
                         </span>
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-gray-600">
+                      <td className="px-5 py-4 text-sm text-muted-foreground">
                         {formatDate(item.createdAt)}
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-gray-600">
+                      <td className="px-5 py-4 text-sm text-muted-foreground">
                         {formatDate(item.lastLoginAt)}
                       </td>
                     </tr>
@@ -585,20 +585,20 @@ export default function UsersPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex flex-col gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-gray-500">
+            <div className="flex flex-col gap-3 border-t border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-muted-foreground">
                 Showing{" "}
-                <span className="font-medium text-gray-800">
+                <span className="font-medium text-foreground">
                   {totalUsers === 0
                     ? 0
                     : (page - 1) * 10 + 1}
                 </span>
                 {" - "}
-                <span className="font-medium text-gray-800">
+                <span className="font-medium text-foreground">
                   {Math.min(page * 10, totalUsers)}
                 </span>
                 {" of "}
-                <span className="font-medium text-gray-800">
+                <span className="font-medium text-foreground">
                   {totalUsers}
                 </span>
                 {" users"}
@@ -609,13 +609,13 @@ export default function UsersPage() {
                   type="button"
                   disabled={page <= 1 || isFetching}
                   onClick={() => setPage((previous) => previous - 1)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ChevronLeft size={16} />
                   Previous
                 </button>
 
-                <span className="px-2 text-sm text-gray-600">
+                <span className="px-2 text-sm text-muted-foreground">
                   {page} / {pagination?.totalPages ?? 1}
                 </span>
 
@@ -626,7 +626,7 @@ export default function UsersPage() {
                     isFetching
                   }
                   onClick={() => setPage((previous) => previous + 1)}
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
                   <ChevronRight size={16} />

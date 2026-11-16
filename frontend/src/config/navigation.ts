@@ -108,8 +108,8 @@ export const ROLE_NAVIGATION: Record<UserRole, NavigationGroup[]> = {
       title: "Factory Operations",
       items: [
         { label: "Production", href: "/dashboard/production-orders", icon: ClipboardList, disabled: false },
-        { label: "Cutting", href: "/dashboard/cutting", icon: Scissors, disabled: comingSoon },
-        { label: "Sewing", href: "/dashboard/sewing", icon: Shirt, disabled: comingSoon },
+        { label: "Cutting", href: "/dashboard/cutting", icon: Scissors, disabled: false },
+        { label: "Sewing", href: "/dashboard/sewing", icon: Shirt, disabled: false },
         { label: "Quality Control", href: "/dashboard/quality-control", icon: BadgeCheck, disabled: comingSoon },
         { label: "Finished Goods", href: "/dashboard/finished-goods", icon: PackageCheck, disabled: comingSoon },
         { label: "Shipments", href: "/dashboard/shipments", icon: Truck, disabled: comingSoon },

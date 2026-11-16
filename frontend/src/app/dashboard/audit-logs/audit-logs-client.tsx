@@ -24,9 +24,9 @@ import type {
 } from "@/types/audit-log";
 
 const ACTION_STYLES: Record<AuditAction, string> = {
-  CREATE: "bg-green-100 text-green-700",
-  UPDATE: "bg-amber-100 text-amber-700",
-  DELETE: "bg-red-100 text-red-700",
+  CREATE: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+  UPDATE: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  DELETE: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 const LIMIT = 20;
@@ -105,7 +105,7 @@ function AuditLogContent() {
   const closeDetails = () => setSelectedId(null);
 
   return (
-    <main className="min-h-screen bg-[#F7F8F3] p-4 md:p-6">
+    <main className="min-h-screen bg-background p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-6">
 
         {/* Header */}
@@ -116,11 +116,11 @@ function AuditLogContent() {
               Garments Factory ERP
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               Audit Logs
             </h1>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Monitor and review system activities performed by users.
             </p>
           </div>
@@ -129,7 +129,7 @@ function AuditLogContent() {
             type="button"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-muted disabled:opacity-50"
           >
             <RefreshCw
               size={16}
@@ -141,35 +141,35 @@ function AuditLogContent() {
 
         {/* Summary */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Total Audit Records
                 </p>
-                <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                <h2 className="mt-2 text-3xl font-bold text-foreground">
                   {total.toLocaleString()}
                 </h2>
               </div>
 
-              <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#6B9B70]">
+              <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#6B9B70] dark:bg-emerald-950 dark:text-emerald-300">
                 <Activity size={24} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Current Page Records
                 </p>
-                <h2 className="mt-2 text-3xl font-bold text-gray-900">
+                <h2 className="mt-2 text-3xl font-bold text-foreground">
                   {logs.length}
                 </h2>
               </div>
 
-              <div className="rounded-xl bg-[#F5EFE0] p-3 text-[#B28A3E]">
+              <div className="rounded-xl bg-[#F5EFE0] p-3 text-[#B28A3E] dark:bg-amber-950 dark:text-amber-300">
                 <FileSearch size={24} />
               </div>
             </div>
@@ -177,11 +177,11 @@ function AuditLogContent() {
         </div>
 
         {/* Filters */}
-        <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <Filter size={18} className="text-[#6B9B70]" />
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-foreground">
                 Filter Audit Logs
               </h2>
             </div>
@@ -190,7 +190,7 @@ function AuditLogContent() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="text-sm font-medium text-[#6B9B70] hover:underline"
+                className="text-sm font-medium text-[#6B9B70] hover:underline dark:text-emerald-300"
               >
                 Clear filters
               </button>
@@ -199,7 +199,7 @@ function AuditLogContent() {
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-gray-600">
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                 Module
               </label>
               <input
@@ -209,12 +209,12 @@ function AuditLogContent() {
                   setPage(1);
                 }}
                 placeholder="e.g. users, products"
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-gray-600">
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                 Action
               </label>
               <select
@@ -223,7 +223,7 @@ function AuditLogContent() {
                   setAction(e.target.value as AuditAction | "");
                   setPage(1);
                 }}
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70]"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70]"
               >
                 <option value="">All Actions</option>
                 <option value="CREATE">Create</option>
@@ -233,7 +233,7 @@ function AuditLogContent() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-gray-600">
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                 Actor ID
               </label>
               <input
@@ -243,12 +243,12 @@ function AuditLogContent() {
                   setPage(1);
                 }}
                 placeholder="User UUID"
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70]"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70]"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-gray-600">
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                 From Date
               </label>
               <input
@@ -258,12 +258,12 @@ function AuditLogContent() {
                   setFromDate(e.target.value);
                   setPage(1);
                 }}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70]"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70]"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-medium text-gray-600">
+              <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                 To Date
               </label>
               <input
@@ -274,25 +274,25 @@ function AuditLogContent() {
                   setToDate(e.target.value);
                   setPage(1);
                 }}
-                className="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70]"
+                className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70]"
               />
             </div>
           </div>
         </section>
 
         {/* Table */}
-        <section className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4">
+        <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-foreground">
                 Activity History
               </h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Latest activities appear first.
               </p>
             </div>
 
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {total.toLocaleString()} records found
             </span>
           </div>
@@ -302,7 +302,7 @@ function AuditLogContent() {
               {Array.from({ length: 5 }).map((_, index) => (
                 <div
                   key={index}
-                  className="h-12 animate-pulse rounded-lg bg-gray-100"
+                  className="h-12 animate-pulse rounded-lg bg-muted"
                 />
               ))}
             </div>
@@ -311,7 +311,7 @@ function AuditLogContent() {
               <p className="font-medium text-red-600">
                 Failed to load audit logs.
               </p>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 {(error as Error)?.message || "Something went wrong."}
               </p>
               <button
@@ -324,10 +324,10 @@ function AuditLogContent() {
           ) : logs.length === 0 ? (
             <div className="p-12 text-center">
               <FileSearch className="mx-auto text-gray-300" size={38} />
-              <h3 className="mt-3 font-semibold text-gray-800">
+              <h3 className="mt-3 font-semibold text-foreground">
                 No audit records found
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 There are no activities matching your filters.
               </p>
             </div>
@@ -335,7 +335,7 @@ function AuditLogContent() {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[950px] text-left text-sm">
-                  <thead className="bg-[#F7F8F3] text-xs uppercase text-gray-500">
+                  <thead className="bg-muted text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4 font-semibold">Actor</th>
                       <th className="px-5 py-4 font-semibold">Action</th>
@@ -349,17 +349,17 @@ function AuditLogContent() {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-border">
                     {logs.map((log: AuditLog) => (
                       <tr
                         key={log.id}
-                        className="transition hover:bg-[#F7F8F3]/70"
+                        className="transition hover:bg-muted/70"
                       >
                         <td className="px-5 py-4">
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-foreground">
                             {log.actorEmail || "Unknown user"}
                           </p>
-                          <p className="mt-1 text-xs text-gray-400">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {log.actorRole || "Unknown role"}
                           </p>
                         </td>
@@ -372,21 +372,21 @@ function AuditLogContent() {
                           </span>
                         </td>
 
-                        <td className="px-5 py-4 font-medium capitalize text-gray-700">
+                        <td className="px-5 py-4 font-medium capitalize text-foreground">
                           {log.module}
                         </td>
 
                         <td className="px-5 py-4">
-                          <span className="rounded-md bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-600">
+                          <span className="rounded-md bg-muted px-2 py-1 text-xs font-semibold text-muted-foreground">
                             {log.method}
                           </span>
                         </td>
 
-                        <td className="max-w-36 truncate px-5 py-4 text-xs text-gray-500">
+                        <td className="max-w-36 truncate px-5 py-4 text-xs text-muted-foreground">
                           {log.resourceId || "—"}
                         </td>
 
-                        <td className="whitespace-nowrap px-5 py-4 text-gray-500">
+                        <td className="whitespace-nowrap px-5 py-4 text-muted-foreground">
                           {formatDate(log.createdAt)}
                         </td>
 
@@ -394,7 +394,7 @@ function AuditLogContent() {
                           <button
                             type="button"
                             onClick={() => setSelectedId(log.id)}
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:border-[#6B9B70] hover:text-[#6B9B70]"
+                            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:border-[#6B9B70] hover:text-[#6B9B70] dark:hover:text-emerald-300"
                           >
                             <Eye size={14} />
                             View
@@ -407,8 +407,8 @@ function AuditLogContent() {
               </div>
 
               {/* Pagination */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-5 py-4">
-                <p className="text-sm text-gray-500">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4">
+                <p className="text-sm text-muted-foreground">
                   Page {page} of {Math.max(totalPages, 1)}
                   {" · "}
                   {total} total records
@@ -419,7 +419,7 @@ function AuditLogContent() {
                     type="button"
                     disabled={page <= 1 || isFetching}
                     onClick={() => setPage((current) => current - 1)}
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronLeft size={18} />
                   </button>
@@ -430,7 +430,7 @@ function AuditLogContent() {
                       page >= totalPages || isFetching || totalPages === 0
                     }
                     onClick={() => setPage((current) => current + 1)}
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="rounded-lg border border-border p-2 text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -448,15 +448,15 @@ function AuditLogContent() {
           onClick={closeDetails}
         >
           <div
-            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-xl"
+            className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-card shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4">
+            <div className="sticky top-0 flex items-center justify-between border-b border-border bg-card px-6 py-4">
               <div>
-                <h2 className="font-semibold text-gray-900">
+                <h2 className="font-semibold text-foreground">
                   Audit Log Details
                 </h2>
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1 text-xs text-muted-foreground">
                   Complete record information
                 </p>
               </div>
@@ -464,7 +464,7 @@ function AuditLogContent() {
               <button
                 type="button"
                 onClick={closeDetails}
-                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+                className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
               >
                 <X size={18} />
               </button>
@@ -473,9 +473,9 @@ function AuditLogContent() {
             <div className="p-6">
               {detailsLoading ? (
                 <div className="space-y-3">
-                  <div className="h-8 animate-pulse rounded bg-gray-100" />
-                  <div className="h-8 animate-pulse rounded bg-gray-100" />
-                  <div className="h-32 animate-pulse rounded bg-gray-100" />
+                  <div className="h-8 animate-pulse rounded bg-muted" />
+                  <div className="h-8 animate-pulse rounded bg-muted" />
+                  <div className="h-32 animate-pulse rounded bg-muted" />
                 </div>
               ) : detailsError || !selectedLog ? (
                 <p className="text-sm text-red-600">
@@ -498,10 +498,10 @@ function AuditLogContent() {
                     ].map(([label, value]) => (
                       <div
                         key={label}
-                        className="rounded-lg bg-[#F7F8F3] p-3"
+                        className="rounded-lg bg-muted p-3"
                       >
-                        <p className="text-xs text-gray-500">{label}</p>
-                        <p className="mt-1 break-all text-sm font-medium text-gray-800">
+                        <p className="text-xs text-muted-foreground">{label}</p>
+                        <p className="mt-1 break-all text-sm font-medium text-foreground">
                           {value ?? "—"}
                         </p>
                       </div>
@@ -509,19 +509,19 @@ function AuditLogContent() {
                   </div>
 
                   <div>
-                    <h3 className="mb-2 text-sm font-semibold text-gray-800">
+                    <h3 className="mb-2 text-sm font-semibold text-foreground">
                       Request Path
                     </h3>
-                    <pre className="overflow-x-auto rounded-lg bg-gray-900 p-4 text-xs text-green-300">
+                    <pre className="overflow-x-auto rounded-lg bg-[#17251E] p-4 text-xs text-green-300">
                       {selectedLog.path}
                     </pre>
                   </div>
 
                   <div>
-                    <h3 className="mb-2 text-sm font-semibold text-gray-800">
+                    <h3 className="mb-2 text-sm font-semibold text-foreground">
                       Request Data
                     </h3>
-                    <pre className="max-h-72 overflow-auto rounded-lg bg-gray-900 p-4 text-xs leading-6 text-gray-100">
+                    <pre className="max-h-72 overflow-auto rounded-lg bg-[#17251E] p-4 text-xs leading-6 text-gray-100">
                       {selectedLog.requestData
                         ? JSON.stringify(selectedLog.requestData, null, 2)
                         : "No request data available."}
@@ -529,10 +529,10 @@ function AuditLogContent() {
                   </div>
 
                   <div>
-                    <h3 className="mb-2 text-sm font-semibold text-gray-800">
+                    <h3 className="mb-2 text-sm font-semibold text-foreground">
                       User Agent
                     </h3>
-                    <p className="break-all rounded-lg bg-[#F7F8F3] p-3 text-xs text-gray-600">
+                    <p className="break-all rounded-lg bg-muted p-3 text-xs text-muted-foreground">
                       {selectedLog.userAgent || "—"}
                     </p>
                   </div>

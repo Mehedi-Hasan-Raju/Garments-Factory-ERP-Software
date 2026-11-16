@@ -45,28 +45,28 @@ const STATUS_FLOW: ProductionStatus[] = [
 ];
 
 const STATUS_STYLE: Record<ProductionStatus, string> = {
-  PENDING: "bg-gray-100 text-gray-700",
-  CUTTING: "bg-amber-100 text-amber-800",
-  SEWING: "bg-orange-100 text-orange-800",
-  QC: "bg-purple-100 text-purple-800",
-  COMPLETED: "bg-green-100 text-green-800",
-  SHIPPED: "bg-[#E8F0DF] text-[#527C57]",
-  DELIVERED: "bg-emerald-100 text-emerald-800",
-  CANCELLED: "bg-red-100 text-red-800",
+  PENDING: "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground",
+  CUTTING: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+  SEWING: "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300",
+  QC: "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300",
+  COMPLETED: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
+  SHIPPED: "bg-[#E8F0DF] text-[#527C57] dark:bg-emerald-950 dark:text-emerald-300",
+  DELIVERED: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
+  CANCELLED: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
 };
 
 const SHIPMENT_STYLE: Record<ShipmentStatus, string> = {
-  NOT_SHIPPED: "bg-gray-100 text-gray-700",
-  READY: "bg-amber-100 text-amber-800",
-  PARTIALLY_SHIPPED: "bg-orange-100 text-orange-800",
-  SHIPPED: "bg-green-100 text-green-800",
-  DELIVERED: "bg-emerald-100 text-emerald-800",
+  NOT_SHIPPED: "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground",
+  READY: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
+  PARTIALLY_SHIPPED: "bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300",
+  SHIPPED: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
+  DELIVERED: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
 };
 
 const inputClass =
-  "w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10";
+  "w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10";
 
-const labelClass = "mb-1.5 block text-sm font-medium text-gray-700";
+const labelClass = "mb-1.5 block text-sm font-medium text-foreground";
 
 const buttonClass =
   "inline-flex items-center justify-center gap-2 rounded-lg bg-[#6B9B70] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#58865E] disabled:cursor-not-allowed disabled:opacity-50";
@@ -209,7 +209,7 @@ function ProductionOrdersContent() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F7F8F3] p-4 md:p-6">
+    <main className="min-h-screen bg-background p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-6">
 
         {/* Header */}
@@ -220,11 +220,11 @@ function ProductionOrdersContent() {
               Garments Factory ERP
             </div>
 
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-foreground">
               Production Orders
             </h1>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Manage factory orders, production quantities and workflow.
             </p>
           </div>
@@ -234,7 +234,7 @@ function ProductionOrdersContent() {
               type="button"
               onClick={() => refetch()}
               disabled={isFetching}
-              className="rounded-lg border border-gray-200 bg-white p-2.5 text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+              className="rounded-lg border border-border bg-card p-2.5 text-muted-foreground hover:bg-muted disabled:opacity-50"
               title="Refresh"
             >
               <RefreshCw
@@ -256,33 +256,33 @@ function ProductionOrdersContent() {
 
         {/* Summary */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Total Production Orders
                 </p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">
+                <p className="mt-2 text-3xl font-bold text-foreground">
                   {total.toLocaleString()}
                 </p>
               </div>
-              <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#6B9B70]">
+              <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#6B9B70] dark:bg-emerald-950 dark:text-emerald-300">
                 <Factory size={24} />
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   Records on Current Page
                 </p>
-                <p className="mt-2 text-3xl font-bold text-gray-900">
+                <p className="mt-2 text-3xl font-bold text-foreground">
                   {orders.length}
                 </p>
               </div>
-              <div className="rounded-xl bg-[#F5EFE0] p-3 text-[#B28A3E]">
+              <div className="rounded-xl bg-[#F5EFE0] p-3 text-[#B28A3E] dark:bg-amber-950 dark:text-amber-300">
                 <Activity size={24} />
               </div>
             </div>
@@ -290,7 +290,7 @@ function ProductionOrdersContent() {
         </div>
 
         {/* Filters */}
-        <section className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
+        <section className="rounded-xl border border-border bg-card p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-[1fr_220px_auto]">
             <div>
               <label className={labelClass}>Search Orders</label>
@@ -337,7 +337,7 @@ function ProductionOrdersContent() {
               <button
                 type="button"
                 onClick={resetFilters}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 md:w-auto"
+                className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted md:w-auto"
               >
                 Clear Filters
               </button>
@@ -346,18 +346,18 @@ function ProductionOrdersContent() {
         </section>
 
         {/* Table */}
-        <section className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4">
+        <section className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
             <div>
-              <h2 className="font-semibold text-gray-900">
+              <h2 className="font-semibold text-foreground">
                 Production Order List
               </h2>
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1 text-xs text-muted-foreground">
                 View production orders and manage their progress.
               </p>
             </div>
 
-            <span className="text-xs text-gray-500">
+            <span className="text-xs text-muted-foreground">
               {total.toLocaleString()} orders found
             </span>
           </div>
@@ -367,7 +367,7 @@ function ProductionOrdersContent() {
               {Array.from({ length: 5 }).map((_, index) => (
                 <div
                   key={index}
-                  className="h-12 animate-pulse rounded-lg bg-gray-100"
+                  className="h-12 animate-pulse rounded-lg bg-muted"
                 />
               ))}
             </div>
@@ -390,10 +390,10 @@ function ProductionOrdersContent() {
                 size={38}
                 className="mx-auto text-gray-300"
               />
-              <h3 className="mt-3 font-semibold text-gray-800">
+              <h3 className="mt-3 font-semibold text-foreground">
                 No production orders found
               </h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Create a production order or change your filters.
               </p>
             </div>
@@ -401,7 +401,7 @@ function ProductionOrdersContent() {
             <>
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[1100px] text-left text-sm">
-                  <thead className="bg-[#F7F8F3] text-xs uppercase text-gray-500">
+                  <thead className="bg-muted text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4">Order</th>
                       <th className="px-5 py-4">Buying House / Buyer</th>
@@ -414,40 +414,40 @@ function ProductionOrdersContent() {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-border">
                     {orders.map((order) => (
                       <tr
                         key={order.id}
-                        className="transition hover:bg-[#F7F8F3]/70"
+                        className="transition hover:bg-muted/70"
                       >
                         <td className="px-5 py-4">
-                          <p className="font-semibold text-gray-800">
+                          <p className="font-semibold text-foreground">
                             {order.orderNumber}
                           </p>
-                          <p className="mt-1 text-xs text-gray-400">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {formatDate(order.orderDate)}
                           </p>
                         </td>
 
                         <td className="px-5 py-4">
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-foreground">
                             {order.buyingHouse?.name || "—"}
                           </p>
-                          <p className="mt-1 text-xs text-gray-500">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {order.buyer?.name || "—"}
                           </p>
                         </td>
 
                         <td className="px-5 py-4">
-                          <p className="font-medium text-gray-800">
+                          <p className="font-medium text-foreground">
                             {order.product?.name || "—"}
                           </p>
-                          <p className="mt-1 text-xs text-gray-500">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             {order.styleNumber}
                           </p>
                         </td>
 
-                        <td className="px-5 py-4 font-medium text-gray-700">
+                        <td className="px-5 py-4 font-medium text-foreground">
                           {quantity(order.orderQuantity)}
                         </td>
 
@@ -467,7 +467,7 @@ function ProductionOrdersContent() {
                           </span>
                         </td>
 
-                        <td className="whitespace-nowrap px-5 py-4 text-gray-600">
+                        <td className="whitespace-nowrap px-5 py-4 text-muted-foreground">
                           <span className="inline-flex items-center gap-1.5">
                             <CalendarDays size={14} />
                             {formatDate(order.deliveryDate)}
@@ -480,7 +480,7 @@ function ProductionOrdersContent() {
                               type="button"
                               onClick={() => setSelectedId(order.id)}
                               title="View details"
-                              className="rounded-lg border border-gray-200 p-2 text-gray-600 hover:border-[#6B9B70] hover:text-[#6B9B70]"
+                              className="rounded-lg border border-border p-2 text-muted-foreground hover:border-[#6B9B70] hover:text-[#6B9B70] dark:hover:text-emerald-300"
                             >
                               <Eye size={16} />
                             </button>
@@ -489,7 +489,7 @@ function ProductionOrdersContent() {
                               type="button"
                               disabled={!canChangeStatus(order.status)}
                               onClick={() => openStatusDialog(order)}
-                              className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:border-[#6B9B70] hover:text-[#6B9B70] disabled:opacity-40"
+                              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:border-[#6B9B70] hover:text-[#6B9B70] disabled:opacity-40 dark:hover:text-emerald-300"
                             >
                               Next Status
                             </button>
@@ -504,7 +504,7 @@ function ProductionOrdersContent() {
                                 setSelectedId(order.id);
                                 setShowProgress(true);
                               }}
-                              className="rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:border-[#6B9B70] hover:text-[#6B9B70] disabled:opacity-40"
+                              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:border-[#6B9B70] hover:text-[#6B9B70] disabled:opacity-40 dark:hover:text-emerald-300"
                             >
                               Progress
                             </button>
@@ -517,8 +517,8 @@ function ProductionOrdersContent() {
               </div>
 
               {/* Pagination */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-100 px-5 py-4">
-                <p className="text-sm text-gray-500">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-5 py-4">
+                <p className="text-sm text-muted-foreground">
                   Page {page} of {Math.max(totalPages, 1)}
                   {" · "}
                   {total} total orders
@@ -529,7 +529,7 @@ function ProductionOrdersContent() {
                     type="button"
                     disabled={page <= 1 || isFetching}
                     onClick={() => setPage((value) => value - 1)}
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 disabled:opacity-40"
+                    className="rounded-lg border border-border p-2 text-muted-foreground disabled:opacity-40"
                   >
                     <ChevronLeft size={18} />
                   </button>
@@ -542,7 +542,7 @@ function ProductionOrdersContent() {
                       isFetching
                     }
                     onClick={() => setPage((value) => value + 1)}
-                    className="rounded-lg border border-gray-200 p-2 text-gray-600 disabled:opacity-40"
+                    className="rounded-lg border border-border p-2 text-muted-foreground disabled:opacity-40"
                   >
                     <ChevronRight size={18} />
                   </button>
@@ -699,7 +699,7 @@ function ProductionOrderForm({
   return (
     <Modal title="Create Production Order" onClose={onClose}>
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-gray-500">
+        <div className="p-8 text-center text-sm text-muted-foreground">
           Loading buying houses, buyers and products...
         </div>
       ) : isError || !references ? (
@@ -889,11 +889,11 @@ function ProductionOrderForm({
             </p>
           )}
 
-          <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+          <div className="flex justify-end gap-3 border-t border-border pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-600"
+              className="rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted"
             >
               Cancel
             </button>
@@ -928,15 +928,15 @@ function ProductionOrderDetails({
   return (
     <Modal title="Production Order Details" onClose={onClose}>
       {loading || !order ? (
-        <div className="p-8 text-center text-sm text-gray-500">
+        <div className="p-8 text-center text-sm text-muted-foreground">
           Loading production order...
         </div>
       ) : (
         <div className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-[#F7F8F3] p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-muted p-4">
             <div>
-              <p className="text-xs text-gray-500">Order Number</p>
-              <p className="mt-1 text-lg font-bold text-gray-900">
+              <p className="text-xs text-muted-foreground">Order Number</p>
+              <p className="mt-1 text-lg font-bold text-foreground">
                 {order.orderNumber}
               </p>
             </div>
@@ -976,7 +976,7 @@ function ProductionOrderDetails({
           </div>
 
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-gray-800">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">
               Production Progress
             </h3>
 
@@ -1002,13 +1002,13 @@ function ProductionOrderDetails({
 
           {order.designImageUrl && (
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-gray-800">
+              <h3 className="mb-2 text-sm font-semibold text-foreground">
                 Design Image
               </h3>
               <img
                 src={order.designImageUrl}
                 alt={`Design for ${order.orderNumber}`}
-                className="max-h-64 rounded-lg border border-gray-200 object-contain"
+                className="max-h-64 rounded-lg border border-border object-contain"
               />
             </div>
           )}
@@ -1046,7 +1046,7 @@ function ProductionProgressForm({
   if (!order) {
     return (
       <Modal title="Update Production Progress" onClose={onClose}>
-        <p className="p-8 text-center text-sm text-gray-500">
+        <p className="p-8 text-center text-sm text-muted-foreground">
           Loading order details...
         </p>
       </Modal>
@@ -1112,12 +1112,12 @@ function ProductionProgressForm({
   return (
     <Modal title="Update Production Progress" onClose={onClose}>
       <form onSubmit={submit} className="space-y-4">
-        <div className="rounded-lg bg-[#F7F8F3] p-3">
-          <p className="text-xs text-gray-500">Production Order</p>
-          <p className="mt-1 font-semibold text-gray-900">
+        <div className="rounded-lg bg-muted p-3">
+          <p className="text-xs text-muted-foreground">Production Order</p>
+          <p className="mt-1 font-semibold text-foreground">
             {order.orderNumber} · {order.styleNumber}
           </p>
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-muted-foreground">
             Order quantity: {quantity(order.orderQuantity)}
           </p>
         </div>
@@ -1176,11 +1176,11 @@ function ProductionProgressForm({
           </p>
         )}
 
-        <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+        <div className="flex justify-end gap-3 border-t border-border pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-600"
+            className="rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted"
           >
             Cancel
           </button>
@@ -1212,12 +1212,12 @@ function ConfirmStatusDialog({
   return (
     <Modal title="Confirm Status Change" onClose={onClose}>
       <div className="space-y-5">
-        <p className="text-sm leading-6 text-gray-600">
+        <p className="text-sm leading-6 text-muted-foreground">
           Are you sure you want to move this production order to the
           following status?
         </p>
 
-        <div className="rounded-xl bg-[#F7F8F3] p-5 text-center">
+        <div className="rounded-xl bg-muted p-5 text-center">
           <span
             className={`rounded-full px-4 py-2 text-sm font-semibold ${STATUS_STYLE[nextStatus]}`}
           >
@@ -1225,16 +1225,16 @@ function ConfirmStatusDialog({
           </span>
         </div>
 
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           The backend will validate whether this transition is allowed.
           Required production quantities must already be recorded.
         </p>
 
-        <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+        <div className="flex justify-end gap-3 border-t border-border pt-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-gray-600"
+            className="rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted"
           >
             Cancel
           </button>
@@ -1273,14 +1273,14 @@ function Modal({
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4">
-          <h2 className="font-semibold text-gray-900">{title}</h2>
+      <div className="max-h-[92vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-card shadow-xl">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-card px-6 py-4">
+          <h2 className="font-semibold text-foreground">{title}</h2>
 
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100"
+            className="rounded-lg p-2 text-muted-foreground hover:bg-muted"
           >
             <X size={18} />
           </button>
@@ -1315,9 +1315,9 @@ function Info({
   value?: string | null;
 }) {
   return (
-    <div className="min-w-0 rounded-lg bg-[#F7F8F3] p-3">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="mt-1 break-words text-sm font-medium text-gray-800">
+    <div className="min-w-0 rounded-lg bg-muted p-3">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 break-words text-sm font-medium text-foreground">
         {value || "—"}
       </p>
     </div>

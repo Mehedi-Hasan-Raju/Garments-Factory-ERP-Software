@@ -28,25 +28,25 @@ const stats = [
     key: "products",
     label: "Total Products",
     icon: Package,
-    iconClass: "bg-emerald-50 text-emerald-600",
+    iconClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300",
   },
   {
     key: "stock",
     label: "Stock Available",
     icon: Boxes,
-    iconClass: "bg-[#E8F0DF] text-[#6B9B70]",
+    iconClass: "bg-[#E8F0DF] text-[#6B9B70] dark:bg-emerald-950 dark:text-emerald-300",
   },
   {
     key: "orders",
     label: "Total Orders",
     icon: ClipboardList,
-    iconClass: "bg-amber-50 text-amber-600",
+    iconClass: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300",
   },
   {
     key: "employees",
     label: "Total Employees",
     icon: Users,
-    iconClass: "bg-violet-50 text-violet-600",
+    iconClass: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
   },
 ] as const;
 
@@ -64,18 +64,18 @@ function SummaryCard({
   iconClass: string;
 }) {
   return (
-    <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.025)] dark:border-slate-800 dark:bg-slate-900">
+    <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm">
       <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${iconClass}`}>
         <Icon className="size-5" />
       </div>
       <div className="min-w-0">
-        <p className="text-xl font-bold leading-none text-slate-800 dark:text-white">
+        <p className="text-xl font-bold leading-none text-foreground">
           {value}
         </p>
-        <p className="mt-1 text-xs font-medium text-slate-700 dark:text-slate-200">
+        <p className="mt-1 text-xs font-medium text-foreground/80">
           {label}
         </p>
-        <p className="mt-1 truncate text-[10px] text-slate-400">
+        <p className="mt-1 truncate text-[10px] text-muted-foreground">
           {description}
         </p>
       </div>
@@ -87,21 +87,21 @@ function StatusBadge({ status }: { status: string }) {
   const normalized = status.toUpperCase();
 
   const styles: Record<string, string> = {
-  COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  DELIVERED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  PENDING: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  CUTTING: "bg-[#E8F0DF] text-[#527D57] ring-[#6B9B70]/20",
-  SEWING: "bg-violet-50 text-violet-700 ring-violet-600/20",
-  QC: "bg-orange-50 text-orange-700 ring-orange-600/20",
-  SHIPPED: "bg-[#F0EDE5] text-[#8B7650] ring-[#B49A69]/20",
-  CANCELLED: "bg-red-50 text-red-700 ring-red-600/20",
+  COMPLETED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-950 dark:text-emerald-300",
+  DELIVERED: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-950 dark:text-emerald-300",
+  PENDING: "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-950 dark:text-amber-300",
+  CUTTING: "bg-[#E8F0DF] text-[#527D57] ring-[#6B9B70]/20 dark:bg-emerald-950 dark:text-emerald-300",
+  SEWING: "bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-950 dark:text-green-300",
+  QC: "bg-orange-50 text-orange-700 ring-orange-600/20 dark:bg-orange-950 dark:text-orange-300",
+  SHIPPED: "bg-[#F0EDE5] text-[#8B7650] ring-[#B49A69]/20 dark:bg-amber-950 dark:text-amber-300",
+  CANCELLED: "bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-950 dark:text-red-300",
 };
 
   return (
     <span
       className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-medium ring-1 ring-inset ${
         styles[normalized] ??
-        "bg-slate-100 text-slate-600 ring-slate-500/20"
+        "bg-muted text-muted-foreground ring-border"
       }`}
     >
       <span className="size-1.5 rounded-full bg-current" />
@@ -151,11 +151,11 @@ export default function OwnerDashboardContent() {
 
   if (isError || !data) {
     return (
-      <div className="rounded-2xl border border-red-200 bg-white p-6 dark:border-red-900 dark:bg-slate-900">
-        <h2 className="font-semibold text-slate-800 dark:text-white">
+      <div className="rounded-2xl border border-red-200 bg-card p-6 dark:border-red-900">
+        <h2 className="font-semibold text-foreground">
           Unable to load dashboard
         </h2>
-        <p className="mt-2 text-sm text-slate-500">
+        <p className="mt-2 text-sm text-muted-foreground">
           {error instanceof Error ? error.message : "Something went wrong."}
         </p>
         <button
@@ -185,28 +185,28 @@ export default function OwnerDashboardContent() {
     value: formatNumber(dashboard.inventory.lowStockCount),
     description: "Below stock threshold",
     icon: AlertTriangle,
-    iconClass: "bg-amber-50 text-amber-600",
+    iconClass: "bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-300",
   },
   {
     label: "Warehouses",
     value: formatNumber(dashboard.inventory.warehouseCount),
     description: "Registered warehouses",
     icon: Warehouse,
-    iconClass: "bg-[#E8F0DF] text-[#6B9B70]",
+    iconClass: "bg-[#E8F0DF] text-[#6B9B70] dark:bg-emerald-950 dark:text-emerald-300",
   },
   {
     label: "Recent Shipments",
     value: formatNumber(dashboard.shipments.total),
     description: "Total shipment records",
     icon: Truck,
-    iconClass: "bg-emerald-50 text-emerald-600",
+    iconClass: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-300",
   },
   {
     label: "Pending Purchase Orders",
     value: formatNumber(dashboard.purchasing.pendingApproval),
     description: "Awaiting approval",
     icon: ShoppingCart,
-    iconClass: "bg-orange-50 text-orange-600",
+    iconClass: "bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-300",
   },
 ];
 
@@ -215,13 +215,13 @@ export default function OwnerDashboardContent() {
       {/* Page heading */}
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-medium text-slate-400">
+          <p className="text-xs font-medium text-muted-foreground">
             GARMENTS ERP / OVERVIEW
           </p>
-          <h1 className="mt-1 text-xl font-bold tracking-tight text-slate-800 dark:text-white sm:text-2xl">
+          <h1 className="mt-1 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
             Inventory Overview
           </h1>
-          <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
             Track stock, orders and factory performance at a glance.
           </p>
         </div>
@@ -232,7 +232,7 @@ export default function OwnerDashboardContent() {
             onChange={(event) =>
               setRange(event.target.value as DashboardRange)
             }
-            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-xs font-medium text-slate-600 outline-none transition hover:border-slate-300 focus:ring-2 focus:ring-primary/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+            className="h-9 rounded-lg border border-input bg-background px-3 text-xs font-medium text-foreground outline-none transition hover:border-primary focus:ring-2 focus:ring-primary/20"
             aria-label="Dashboard date range"
           >
             <option value="7d">Last 7 days</option>
@@ -243,7 +243,7 @@ export default function OwnerDashboardContent() {
           <button
             onClick={() => void refetch()}
             disabled={isFetching}
-            className="flex size-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900"
+            className="flex size-9 items-center justify-center rounded-lg border border-input bg-background text-muted-foreground transition hover:bg-muted disabled:opacity-50"
             aria-label="Refresh dashboard"
             title="Refresh dashboard"
           >
@@ -262,10 +262,10 @@ export default function OwnerDashboardContent() {
           return (
             <div
               key={stat.key}
-              className="group min-w-0 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.025)] transition duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 sm:p-5"
+              className="group min-w-0 rounded-2xl border border-border bg-card p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-5"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                <p className="text-xs font-medium text-muted-foreground">
                   {stat.label}
                 </p>
                 <div className={`flex size-9 shrink-0 items-center justify-center rounded-xl ${stat.iconClass}`}>
@@ -273,10 +273,10 @@ export default function OwnerDashboardContent() {
                 </div>
               </div>
 
-              <p className="mt-5 text-2xl font-bold tracking-tight text-slate-800 dark:text-white sm:text-[28px]">
+              <p className="mt-5 text-2xl font-bold tracking-tight text-foreground sm:text-[28px]">
                 {values[stat.key]}
               </p>
-              <p className="mt-1 text-[10px] text-slate-400">
+              <p className="mt-1 text-[10px] text-muted-foreground">
                 Current system records
               </p>
             </div>
@@ -288,17 +288,17 @@ export default function OwnerDashboardContent() {
       <OwnerDashboardCharts dashboard={dashboard} />
 
       {/* Operational status */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.025)] dark:border-slate-800 dark:bg-slate-900 sm:p-5">
+      <section className="rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h2 className="text-sm font-semibold text-slate-800 dark:text-white">
+            <h2 className="text-sm font-semibold text-foreground">
               Factory Operations
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Current production workflow status
             </p>
           </div>
-          <span className="text-[10px] text-slate-400">
+          <span className="text-[10px] text-muted-foreground">
             {formatNumber(dashboard.production.totalOrders)} total orders
           </span>
         </div>
@@ -308,10 +308,10 @@ export default function OwnerDashboardContent() {
             ([status, count], index) => (
               <div
                 key={status}
-                className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800/60"
+                className="rounded-xl bg-muted p-4"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <p className="text-[11px] font-medium capitalize text-slate-500 dark:text-slate-400">
+                  <p className="text-[11px] font-medium capitalize text-muted-foreground">
                     {status.replaceAll("_", " ").toLowerCase()}
                   </p>
                   <span
@@ -322,7 +322,7 @@ export default function OwnerDashboardContent() {
                     }}
                   />
                 </div>
-                <p className="mt-2 text-xl font-bold text-slate-800 dark:text-white">
+                <p className="mt-2 text-xl font-bold text-foreground">
                   {formatNumber(count)}
                 </p>
               </div>
@@ -332,29 +332,29 @@ export default function OwnerDashboardContent() {
       </section>
 
       {/* Recent production orders */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_2px_10px_rgba(15,23,42,0.025)] dark:border-slate-800 dark:bg-slate-900">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 dark:border-slate-800 sm:px-5">
+      <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
           <div>
-            <h2 className="text-sm font-semibold text-slate-800 dark:text-white">
+            <h2 className="text-sm font-semibold text-foreground">
               Recent Production Orders
             </h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Latest production orders from your factory
             </p>
           </div>
-          <span className="rounded-lg bg-slate-50 px-3 py-2 text-[10px] text-slate-500 dark:bg-slate-800">
+          <span className="rounded-lg bg-muted px-3 py-2 text-[10px] text-muted-foreground">
             Latest {dashboard.recent.productionOrders.length} records
           </span>
         </div>
 
         {dashboard.recent.productionOrders.length === 0 ? (
-          <div className="p-10 text-center text-sm text-slate-400">
+          <div className="p-10 text-center text-sm text-muted-foreground">
             No recent production orders found.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-xs">
-              <thead className="bg-slate-50/80 text-[10px] uppercase tracking-wide text-slate-400 dark:bg-slate-800/60">
+              <thead className="bg-muted/80 text-[10px] uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-5 py-3 font-medium">Order ID</th>
                   <th className="px-4 py-3 font-medium">Buying House</th>
@@ -365,28 +365,28 @@ export default function OwnerDashboardContent() {
                   <th className="px-4 py-3 font-medium">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-border">
                 {dashboard.recent.productionOrders.map((order) => (
                   <tr
                     key={order.id}
-                    className="transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
+                    className="transition hover:bg-muted/70"
                   >
                     <td className="whitespace-nowrap px-5 py-4 font-semibold text-emerald-600">
                       #{order.orderNumber}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-slate-600 dark:text-slate-300">
+                    <td className="whitespace-nowrap px-4 py-4 text-muted-foreground">
                       {order.buyingHouse.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-slate-600 dark:text-slate-300">
+                    <td className="whitespace-nowrap px-4 py-4 text-muted-foreground">
                       {order.product.name}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-slate-500">
+                    <td className="whitespace-nowrap px-4 py-4 text-muted-foreground">
                       {order.styleNumber}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-4 font-medium tabular-nums text-slate-700 dark:text-slate-200">
+                    <td className="whitespace-nowrap px-4 py-4 font-medium tabular-nums text-foreground">
                       {formatNumber(order.orderQuantity)}
                     </td>
-                    <td className="whitespace-nowrap px-4 py-4 text-slate-500">
+                    <td className="whitespace-nowrap px-4 py-4 text-muted-foreground">
                       {new Date(order.deliveryDate).toLocaleDateString()}
                     </td>
                     <td className="whitespace-nowrap px-4 py-4">
@@ -399,8 +399,8 @@ export default function OwnerDashboardContent() {
           </div>
         )}
 
-        <div className="border-t border-slate-100 px-5 py-3 dark:border-slate-800">
-          <p className="text-[10px] text-slate-400">
+        <div className="border-t border-border px-5 py-3">
+          <p className="text-[10px] text-muted-foreground">
             Showing {dashboard.recent.productionOrders.length} recent production orders
           </p>
         </div>
@@ -413,7 +413,7 @@ export default function OwnerDashboardContent() {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 pb-1 text-[10px] text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-2 pb-1 text-[10px] text-muted-foreground">
         <span>Garments ERP · Owner Dashboard</span>
         <span>
           Updated: {new Date(data.generatedAt).toLocaleString()}

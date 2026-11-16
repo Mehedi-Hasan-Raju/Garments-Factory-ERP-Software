@@ -59,18 +59,17 @@ function StatCard({
   value: string | number;
   description?: string;
   icon: React.ElementType;
-  color?: "green" | "amber" | "purple" | "orange" | "neutral";
+  color?: "green" | "amber" | "orange" | "neutral";
 }) {
   const colors = {
-    green: "bg-[#E8F0DF] text-[#557D5B]",
-    amber: "bg-amber-50 text-amber-700",
-    purple: "bg-purple-50 text-purple-700",
-    orange: "bg-orange-50 text-orange-700",
-    neutral: "bg-slate-100 text-slate-700",
+    green: "bg-[#E8F0DF] text-[#557D5B] dark:bg-emerald-950 dark:text-emerald-300",
+    amber: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+    orange: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
+    neutral: "bg-muted text-muted-foreground",
   };
 
   return (
-    <div className="rounded-xl border bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-medium text-muted-foreground">
@@ -125,7 +124,7 @@ function ChartPanel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
       <h3 className="font-semibold">{title}</h3>
       <p className="mt-1 text-xs text-muted-foreground">{description}</p>
       {children}
@@ -153,18 +152,18 @@ function AdminDashboardContent() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-[#F7F8F3] p-6">
+      <main className="min-h-screen bg-background p-6">
         <div className="mx-auto max-w-7xl space-y-6">
           <div className="h-8 w-56 animate-pulse rounded bg-muted" />
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, index) => (
               <div
                 key={index}
-                className="h-32 animate-pulse rounded-xl bg-white"
+                className="h-32 animate-pulse rounded-xl bg-card"
               />
             ))}
           </div>
-          <div className="h-72 animate-pulse rounded-xl bg-white" />
+          <div className="h-72 animate-pulse rounded-xl bg-card" />
         </div>
       </main>
     );
@@ -172,8 +171,8 @@ function AdminDashboardContent() {
 
   if (isError || !dashboard) {
     return (
-      <main className="flex min-h-[70vh] items-center justify-center bg-[#F7F8F3] p-6">
-        <div className="max-w-md rounded-xl border bg-white p-8 text-center shadow-sm">
+      <main className="flex min-h-[70vh] items-center justify-center bg-background p-6">
+        <div className="max-w-md rounded-xl border border-border bg-card p-8 text-center shadow-sm">
           <AlertTriangle className="mx-auto text-red-500" size={36} />
 
           <h2 className="mt-4 text-lg font-semibold">
@@ -220,7 +219,7 @@ function AdminDashboardContent() {
     {
       name: "Inactive",
       value: Math.max(employees.total - employees.active, 0),
-      color: "#CBD5E1",
+      color: "#A6BBA3",
     },
   ];
   const stockRecordCount = Math.max(inventory.stockRecordCount, 0);
@@ -244,7 +243,7 @@ function AdminDashboardContent() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#F7F8F3] p-4 sm:p-6">
+    <main className="min-h-screen bg-background p-4 sm:p-6">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -268,7 +267,7 @@ function AdminDashboardContent() {
               onChange={(event) =>
                 updateRange(event.target.value as DashboardRange)
               }
-              className="h-10 rounded-lg border bg-white px-3 text-sm outline-none focus:border-[#6B9B70]"
+              className="h-10 rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none focus:border-[#6B9B70]"
             >
               <option value="7d">Last 7 days</option>
               <option value="30d">Last 30 days</option>
@@ -278,7 +277,7 @@ function AdminDashboardContent() {
             <button
               onClick={() => refetch()}
               disabled={isFetching}
-              className="flex h-10 items-center gap-2 rounded-lg border bg-white px-3 text-sm font-medium hover:bg-muted disabled:opacity-50"
+              className="flex h-10 items-center gap-2 rounded-lg border border-input bg-background px-3 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50"
             >
               <RefreshCw
                 size={16}
@@ -309,7 +308,7 @@ function AdminDashboardContent() {
                     margin={{ top: 4, right: 12, bottom: 4, left: 0 }}
                   >
                     <CartesianGrid
-                      stroke="#E2E8F0"
+                      stroke="var(--border)"
                       strokeDasharray="3 3"
                       horizontal={false}
                     />
@@ -318,7 +317,7 @@ function AdminDashboardContent() {
                       allowDecimals={false}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11 }}
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     />
                     <YAxis
                       type="category"
@@ -326,9 +325,15 @@ function AdminDashboardContent() {
                       width={122}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11 }}
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     />
                     <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--popover)",
+                        border: "1px solid var(--border)",
+                        borderRadius: "0.75rem",
+                        color: "var(--popover-foreground)",
+                      }}
                       formatter={(value) => [
                         formatNumber(Number(value)),
                         "People / locations",
@@ -373,6 +378,12 @@ function AdminDashboardContent() {
                         ))}
                       </Pie>
                       <Tooltip
+                        contentStyle={{
+                          backgroundColor: "var(--popover)",
+                          border: "1px solid var(--border)",
+                          borderRadius: "0.75rem",
+                          color: "var(--popover-foreground)",
+                        }}
                         formatter={(value) => [
                           formatNumber(Number(value)),
                           "Employees",
@@ -430,7 +441,7 @@ function AdminDashboardContent() {
                     margin={{ top: 4, right: 12, bottom: 4, left: 0 }}
                   >
                     <CartesianGrid
-                      stroke="#E2E8F0"
+                      stroke="var(--border)"
                       strokeDasharray="3 3"
                       horizontal={false}
                     />
@@ -439,7 +450,7 @@ function AdminDashboardContent() {
                       allowDecimals={false}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11 }}
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     />
                     <YAxis
                       type="category"
@@ -447,9 +458,15 @@ function AdminDashboardContent() {
                       width={122}
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fontSize: 11 }}
+                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     />
                     <Tooltip
+                      contentStyle={{
+                        backgroundColor: "var(--popover)",
+                        border: "1px solid var(--border)",
+                        borderRadius: "0.75rem",
+                        color: "var(--popover-foreground)",
+                      }}
                       formatter={(value) => [
                         formatNumber(Number(value)),
                         "Records",
@@ -494,6 +511,12 @@ function AdminDashboardContent() {
                         ))}
                       </Pie>
                       <Tooltip
+                        contentStyle={{
+                          backgroundColor: "var(--popover)",
+                          border: "1px solid var(--border)",
+                          borderRadius: "0.75rem",
+                          color: "var(--popover-foreground)",
+                        }}
                         formatter={(value) => [
                           formatNumber(Number(value)),
                           "Stock records",
@@ -557,7 +580,7 @@ function AdminDashboardContent() {
               value={production.activeOrders}
               description="Currently active production orders"
               icon={Factory}
-              color="purple"
+              color="green"
             />
           </div>
         </section>
@@ -569,7 +592,7 @@ function AdminDashboardContent() {
             description="Recently created production orders within the selected period."
           />
 
-          <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
             {recent.productionOrders.length === 0 ? (
               <div className="p-10 text-center">
                 <Factory
@@ -586,7 +609,7 @@ function AdminDashboardContent() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[850px] text-left text-sm">
-                  <thead className="border-b bg-[#F7F8F3] text-xs uppercase text-muted-foreground">
+                  <thead className="border-b border-border bg-muted text-xs uppercase text-muted-foreground">
                     <tr>
                       <th className="px-5 py-4 font-semibold">Order</th>
                       <th className="px-5 py-4 font-semibold">Product</th>
@@ -597,11 +620,11 @@ function AdminDashboardContent() {
                     </tr>
                   </thead>
 
-                  <tbody className="divide-y">
+                  <tbody className="divide-y divide-border">
                     {recent.productionOrders.map((order) => (
                       <tr
                         key={order.id}
-                        className="transition-colors hover:bg-muted/30"
+                        className="transition-colors hover:bg-muted/70"
                       >
                         <td className="px-5 py-4">
                           <p className="font-semibold">{order.orderNumber}</p>
@@ -626,7 +649,7 @@ function AdminDashboardContent() {
                         </td>
 
                         <td className="px-5 py-4">
-                          <span className="inline-flex rounded-full bg-[#E8F0DF] px-3 py-1 text-xs font-medium text-[#557D5B]">
+                          <span className="inline-flex rounded-full bg-[#E8F0DF] px-3 py-1 text-xs font-medium text-[#557D5B] dark:bg-emerald-950 dark:text-emerald-300">
                             {order.status.replaceAll("_", " ")}
                           </span>
                         </td>
@@ -659,10 +682,10 @@ function AdminDashboardContent() {
             </Link>
           </div>
 
-          <div className="rounded-xl border bg-white shadow-sm">
+          <div className="rounded-xl border border-border bg-card shadow-sm">
             <div className="flex items-center justify-between border-b p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-[#E8F0DF] p-2.5 text-[#557D5B]">
+                <div className="rounded-lg bg-[#E8F0DF] p-2.5 text-[#557D5B] dark:bg-emerald-950 dark:text-emerald-300">
                   <Bell size={20} />
                 </div>
 
@@ -676,7 +699,7 @@ function AdminDashboardContent() {
                 </div>
               </div>
 
-              <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+              <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
                 {notifications.unreadCount} unread
               </span>
             </div>
@@ -697,7 +720,7 @@ function AdminDashboardContent() {
                   <div
                     key={notification.id}
                     className={`flex items-start gap-3 p-5 ${
-                      !notification.isRead ? "bg-[#F7F8F3]/70" : ""
+                      !notification.isRead ? "bg-[#F7F8F3]/70 dark:bg-emerald-950/30" : ""
                     }`}
                   >
                     <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#6B9B70]" />

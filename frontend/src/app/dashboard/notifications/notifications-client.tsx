@@ -58,35 +58,35 @@ const typeStyles: Record<
 > = {
   GENERAL: {
     label: "General",
-    className: "bg-gray-100 text-gray-700",
+    className: "bg-gray-100 text-gray-700 dark:bg-muted dark:text-muted-foreground",
   },
   INVENTORY: {
     label: "Inventory",
-    className: "bg-amber-50 text-amber-700",
+    className: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
   },
   PRODUCTION: {
     label: "Production",
-    className: "bg-green-50 text-green-700",
+    className: "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300",
   },
   PURCHASE: {
     label: "Purchase",
-    className: "bg-orange-50 text-orange-700",
+    className: "bg-orange-50 text-orange-700 dark:bg-orange-950 dark:text-orange-300",
   },
   PAYMENT: {
     label: "Payment",
-    className: "bg-emerald-50 text-emerald-700",
+    className: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
   },
   SHIPMENT: {
     label: "Shipment",
-    className: "bg-purple-50 text-purple-700",
+    className: "bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
   },
   HR: {
     label: "HR",
-    className: "bg-pink-50 text-pink-700",
+    className: "bg-pink-50 text-pink-700 dark:bg-pink-950 dark:text-pink-300",
   },
   TASK: {
     label: "Task",
-    className: "bg-sky-50 text-sky-700",
+    className: "bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300",
   },
 };
 
@@ -275,15 +275,15 @@ export default function NotificationsPage() {
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E8F0DF] text-[#527D57]">
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#E8F0DF] text-[#527D57] dark:bg-emerald-950 dark:text-emerald-300">
               <Bell className="h-5 w-5" />
             </div>
 
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-foreground">
                 Notifications
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-muted-foreground">
                 Stay updated with your factory activities.
               </p>
             </div>
@@ -294,7 +294,7 @@ export default function NotificationsPage() {
           type="button"
           onClick={handleMarkAllRead}
           disabled={unreadCount === 0 || isActionPending}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#D5E2D1] bg-white px-4 py-2.5 text-sm font-medium text-[#527D57] transition hover:bg-[#F1F6ED] disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#D5E2D1] bg-card px-4 py-2.5 text-sm font-medium text-[#527D57] transition hover:bg-[#F1F6ED] disabled:cursor-not-allowed disabled:opacity-50 dark:border-border dark:text-emerald-300 dark:hover:bg-emerald-950"
         >
           {markAllMutation.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -307,35 +307,35 @@ export default function NotificationsPage() {
 
       {/* Summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-[#E5EADF] bg-white p-5">
+        <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Unread notifications
               </p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">
+              <p className="mt-2 text-3xl font-bold text-foreground">
                 {unreadCount}
               </p>
             </div>
 
-            <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#527D57]">
+            <div className="rounded-xl bg-[#E8F0DF] p-3 text-[#527D57] dark:bg-emerald-950 dark:text-emerald-300">
               <Bell className="h-6 w-6" />
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-[#E5EADF] bg-white p-5">
+        <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 Notifications on this page
               </p>
-              <p className="mt-2 text-3xl font-bold text-gray-900">
+              <p className="mt-2 text-3xl font-bold text-foreground">
                 {notifications.length}
               </p>
             </div>
 
-            <div className="rounded-xl bg-[#F0F3EC] p-3 text-[#71866B]">
+            <div className="rounded-xl bg-[#F0F3EC] p-3 text-[#71866B] dark:bg-muted dark:text-muted-foreground">
               <Inbox className="h-6 w-6" />
             </div>
           </div>
@@ -343,9 +343,9 @@ export default function NotificationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="rounded-xl border border-[#E5EADF] bg-white p-4">
+      <div className="rounded-xl border border-border bg-card p-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex items-center gap-2 text-sm font-semibold text-gray-700">
+          <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
             <Filter className="h-4 w-4 text-[#6B9B70]" />
             Filters
           </div>
@@ -358,7 +358,7 @@ export default function NotificationsPage() {
                   e.target.value as "all" | "true" | "false",
                 )
               }
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
             >
               <option value="all">All notifications</option>
               <option value="false">Unread only</option>
@@ -372,7 +372,7 @@ export default function NotificationsPage() {
                   e.target.value as NotificationType | "all",
                 )
               }
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
+              className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm text-foreground outline-none focus:border-[#6B9B70] focus:ring-2 focus:ring-[#6B9B70]/10"
             >
               <option value="all">All types</option>
               {notificationTypes.map((type) => (
@@ -386,13 +386,13 @@ export default function NotificationsPage() {
       </div>
 
       {/* Notification list */}
-      <div className="overflow-hidden rounded-xl border border-[#E5EADF] bg-white">
-        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <div>
-            <h2 className="font-semibold text-gray-900">
+            <h2 className="font-semibold text-foreground">
               All notifications
             </h2>
-            <p className="mt-1 text-xs text-gray-500">
+            <p className="mt-1 text-xs text-muted-foreground">
               Your latest account notifications
             </p>
           </div>
@@ -406,7 +406,7 @@ export default function NotificationsPage() {
         {isLoading && (
           <div className="flex flex-col items-center justify-center py-16">
             <Loader2 className="h-8 w-8 animate-spin text-[#6B9B70]" />
-            <p className="mt-3 text-sm text-gray-500">
+            <p className="mt-3 text-sm text-muted-foreground">
               Loading notifications...
             </p>
           </div>
@@ -416,10 +416,10 @@ export default function NotificationsPage() {
         {!isLoading && isError && (
           <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
             <Bell className="h-9 w-9 text-gray-300" />
-            <h3 className="mt-3 font-semibold text-gray-800">
+            <h3 className="mt-3 font-semibold text-foreground">
               Failed to load notifications
             </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               Something went wrong while retrieving notifications.
             </p>
             <button
@@ -437,15 +437,15 @@ export default function NotificationsPage() {
           !isError &&
           notifications.length === 0 && (
             <div className="flex flex-col items-center justify-center px-5 py-16 text-center">
-              <div className="rounded-full bg-[#F1F5ED] p-4 text-[#789675]">
+              <div className="rounded-full bg-[#F1F5ED] p-4 text-[#789675] dark:bg-muted dark:text-muted-foreground">
                 <Inbox className="h-8 w-8" />
               </div>
 
-              <h3 className="mt-4 font-semibold text-gray-800">
+              <h3 className="mt-4 font-semibold text-foreground">
                 No notifications found
               </h3>
 
-              <p className="mt-1 max-w-sm text-sm text-gray-500">
+              <p className="mt-1 max-w-sm text-sm text-muted-foreground">
                 You do not have any notifications matching these filters.
               </p>
             </div>
@@ -453,19 +453,19 @@ export default function NotificationsPage() {
 
         {/* Notification items */}
         {!isLoading && !isError && notifications.length > 0 && (
-          <div className="divide-y divide-gray-100">
+          <div className="divide-y divide-border">
             {notifications.map((notification) => (
               <div
                 key={notification.id}
-                className={`flex flex-col gap-4 px-5 py-5 transition hover:bg-[#FAFCF8] sm:flex-row sm:items-start ${
-                  !notification.isRead ? "bg-[#F7FAF4]" : "bg-white"
+                className={`flex flex-col gap-4 px-5 py-5 transition hover:bg-[#FAFCF8] dark:hover:bg-muted/70 sm:flex-row sm:items-start ${
+                  !notification.isRead ? "bg-[#F7FAF4] dark:bg-emerald-950/30" : "bg-card"
                 }`}
               >
                 <div
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
                     !notification.isRead
-                      ? "bg-[#E5EFDF] text-[#527D57]"
-                      : "bg-gray-100 text-gray-500"
+                      ? "bg-[#E5EFDF] text-[#527D57] dark:bg-emerald-950 dark:text-emerald-300"
+                      : "bg-gray-100 text-gray-500 dark:bg-muted dark:text-muted-foreground"
                   }`}
                 >
                   {getNotificationIcon(notification.type)}
@@ -476,8 +476,8 @@ export default function NotificationsPage() {
                     <h3
                       className={`text-sm ${
                         !notification.isRead
-                          ? "font-bold text-gray-900"
-                          : "font-semibold text-gray-700"
+                          ? "font-bold text-foreground"
+                          : "font-semibold text-foreground/80"
                       }`}
                     >
                       {notification.title}
@@ -496,11 +496,11 @@ export default function NotificationsPage() {
                     </span>
                   </div>
 
-                  <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-600">
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-muted-foreground">
                     {notification.message}
                   </p>
 
-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-gray-400">
+                  <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5" />
                       {formatDate(notification.createdAt)}
@@ -517,7 +517,7 @@ export default function NotificationsPage() {
                       onClick={() =>
                         handleOpenNotification(notification)
                       }
-                      className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#5B8B60] hover:text-[#416B46]"
+                      className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-[#5B8B60] hover:text-[#416B46] dark:text-emerald-300 dark:hover:text-emerald-200"
                     >
                       View details
                       <ExternalLink className="h-3.5 w-3.5" />
@@ -537,7 +537,7 @@ export default function NotificationsPage() {
                     onClick={() =>
                       handleReadToggle(notification)
                     }
-                    className="rounded-lg border border-gray-200 p-2 text-gray-500 transition hover:border-[#C8DCC3] hover:bg-[#F1F6ED] hover:text-[#527D57] disabled:opacity-50"
+                    className="rounded-lg border border-border p-2 text-muted-foreground transition hover:border-[#C8DCC3] hover:bg-[#F1F6ED] hover:text-[#527D57] disabled:opacity-50 dark:hover:border-emerald-900 dark:hover:bg-emerald-950 dark:hover:text-emerald-300"
                   >
                     {notification.isRead ? (
                       <Bell className="h-4 w-4" />
@@ -553,7 +553,7 @@ export default function NotificationsPage() {
                     onClick={() =>
                       setDeleteTarget(notification)
                     }
-                    className="rounded-lg border border-gray-200 p-2 text-gray-500 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                    className="rounded-lg border border-border p-2 text-muted-foreground transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50 dark:hover:border-red-900 dark:hover:bg-red-950 dark:hover:text-red-300"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -568,8 +568,8 @@ export default function NotificationsPage() {
           !isError &&
           pagination &&
           pagination.totalPages > 0 && (
-            <div className="flex flex-col gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-xs text-gray-500">
+            <div className="flex flex-col gap-3 border-t border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-muted-foreground">
                 Showing{" "}
                 {pagination.total === 0
                   ? 0
@@ -591,13 +591,13 @@ export default function NotificationsPage() {
                   onClick={() =>
                     setPage((current) => current - 1)
                   }
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
                 </button>
 
-                <span className="min-w-20 text-center text-sm font-medium text-gray-700">
+                <span className="min-w-20 text-center text-sm font-medium text-foreground">
                   {pagination.page} / {pagination.totalPages}
                 </span>
 
@@ -609,7 +609,7 @@ export default function NotificationsPage() {
                   onClick={() =>
                     setPage((current) => current + 1)
                   }
-                  className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex items-center gap-1 rounded-lg border border-border px-3 py-2 text-sm text-muted-foreground hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />
@@ -622,7 +622,7 @@ export default function NotificationsPage() {
       {/* Delete confirmation */}
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+          <div className="w-full max-w-md rounded-2xl bg-card p-6 shadow-xl">
             <div className="flex items-start justify-between">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-red-50 text-red-600">
                 <Trash2 className="h-5 w-5" />
@@ -632,17 +632,17 @@ export default function NotificationsPage() {
                 type="button"
                 onClick={() => setDeleteTarget(null)}
                 disabled={deleteMutation.isPending}
-                className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-700"
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <h3 className="mt-4 text-lg font-semibold text-gray-900">
+            <h3 className="mt-4 text-lg font-semibold text-foreground">
               Delete notification?
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-gray-500">
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
               Are you sure you want to delete this notification?
               This action cannot be undone.
             </p>
@@ -652,7 +652,7 @@ export default function NotificationsPage() {
                 type="button"
                 disabled={deleteMutation.isPending}
                 onClick={() => setDeleteTarget(null)}
-                className="rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+                className="rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground hover:bg-muted disabled:opacity-50"
               >
                 Cancel
               </button>

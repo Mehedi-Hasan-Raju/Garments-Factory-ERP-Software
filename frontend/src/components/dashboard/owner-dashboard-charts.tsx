@@ -18,15 +18,14 @@ import {
 
 import type { OwnerDashboardData } from "@/types/dashboard";
 
-// Blue বাদ দিয়ে standard ERP color palette
 export const STATUS_COLORS = [
   "#6B9B70", // Green
   "#D9A441", // Amber
-  "#8B7BB5", // Muted Purple
+  "#527D57", // Forest green
   "#D97757", // Orange
   "#C75C5C", // Red
   "#91A68A", // Sage
-  "#64748B", // Slate
+  "#87958A", // Muted sage
 ];
 
 const formatNumber = (value: number) =>
@@ -51,14 +50,14 @@ function ChartCard({
 }) {
   return (
     <section
-      className={`min-w-0 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.025)] dark:border-slate-800 dark:bg-slate-900 sm:p-5 ${className}`}
+      className={`min-w-0 rounded-2xl border border-border bg-card p-4 shadow-sm sm:p-5 ${className}`}
     >
       <div className="mb-4">
-        <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+        <h2 className="text-sm font-semibold text-foreground">
           {title}
         </h2>
 
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+        <p className="mt-1 text-xs text-muted-foreground">
           {description}
         </p>
       </div>
@@ -70,7 +69,7 @@ function ChartCard({
 
 function EmptyChart({ message }: { message: string }) {
   return (
-    <div className="flex h-[250px] items-center justify-center rounded-xl bg-slate-50 text-sm text-slate-400 dark:bg-slate-800/50">
+    <div className="flex h-[250px] items-center justify-center rounded-xl bg-muted text-sm text-muted-foreground">
       {message}
     </div>
   );
@@ -101,7 +100,7 @@ export default function OwnerDashboardCharts({
     {
       stage: "Sewing",
       quantity: Number(dashboard.production.sewingQuantity) || 0,
-      color: "#8B7BB5",
+      color: "#527D57",
     },
     {
       stage: "Rejected",
@@ -155,6 +154,12 @@ export default function OwnerDashboardCharts({
                   </Pie>
 
                   <Tooltip
+                    contentStyle={{
+                      backgroundColor: "var(--popover)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "0.75rem",
+                      color: "var(--popover-foreground)",
+                    }}
                     formatter={(value) => [
                       formatNumber(Number(value)),
                       "Orders",
@@ -164,11 +169,11 @@ export default function OwnerDashboardCharts({
               </ResponsiveContainer>
 
               <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pb-8">
-                <span className="text-2xl font-bold text-slate-800 dark:text-white">
+                <span className="text-2xl font-bold text-foreground">
                   {formatNumber(totalOrders)}
                 </span>
 
-                <span className="text-[11px] text-slate-500">
+                <span className="text-[11px] text-muted-foreground">
                   Total orders
                 </span>
               </div>
@@ -177,7 +182,7 @@ export default function OwnerDashboardCharts({
                 {productionData.map((item, index) => (
                   <div
                     key={item.status}
-                    className="flex items-center gap-1.5 text-[10px] text-slate-500"
+                    className="flex items-center gap-1.5 text-[10px] text-muted-foreground"
                   >
                     <span
                       className="size-2 rounded-full"
@@ -189,7 +194,7 @@ export default function OwnerDashboardCharts({
 
                     <span className="capitalize">{item.status}</span>
 
-                    <span className="font-semibold text-slate-700 dark:text-slate-300">
+                    <span className="font-semibold text-foreground">
                       {item.count}
                     </span>
                   </div>
@@ -220,26 +225,32 @@ export default function OwnerDashboardCharts({
                   }}
                 >
                   <CartesianGrid
-                    stroke="#e2e8f0"
+                    stroke="var(--border)"
                     strokeDasharray="3 5"
                     vertical={false}
                   />
 
                   <XAxis
                     dataKey="stage"
-                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                    tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     axisLine={false}
                     tickLine={false}
                   />
 
                   <YAxis
                     allowDecimals={false}
-                    tick={{ fontSize: 10, fill: "#94a3b8" }}
+                    tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
                     axisLine={false}
                     tickLine={false}
                   />
 
                   <Tooltip
+                    contentStyle={{
+                      backgroundColor: "var(--popover)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "0.75rem",
+                      color: "var(--popover-foreground)",
+                    }}
                     formatter={(value) => [
                       formatNumber(Number(value)),
                       "Quantity",
@@ -275,16 +286,16 @@ export default function OwnerDashboardCharts({
             <div className="flex min-h-[230px] flex-col justify-center gap-7 px-1 sm:px-5">
               <div>
                 <div className="mb-2 flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-foreground/80">
                     Healthy stock
                   </span>
 
-                  <span className="font-semibold text-slate-800 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {formatNumber(healthyStock)}
                   </span>
                 </div>
 
-                <div className="h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                <div className="h-3 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-[#6B9B70]"
                     style={{
@@ -299,16 +310,16 @@ export default function OwnerDashboardCharts({
 
               <div>
                 <div className="mb-2 flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-600 dark:text-slate-300">
+                  <span className="font-medium text-foreground/80">
                     Low stock
                   </span>
 
-                  <span className="font-semibold text-slate-800 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {formatNumber(lowStock)}
                   </span>
                 </div>
 
-                <div className="h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                <div className="h-3 overflow-hidden rounded-full bg-muted">
                   <div
                     className="h-full rounded-full bg-[#D9A441]"
                     style={{
@@ -321,12 +332,12 @@ export default function OwnerDashboardCharts({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between border-t border-slate-100 pt-4 text-xs dark:border-slate-800">
-                <span className="text-slate-500">
+              <div className="flex items-center justify-between border-t border-border pt-4 text-xs">
+                <span className="text-muted-foreground">
                   Total stock records
                 </span>
 
-                <span className="font-semibold text-slate-800 dark:text-white">
+                <span className="font-semibold text-foreground">
                   {formatNumber(stockRecords)}
                 </span>
               </div>
@@ -345,25 +356,25 @@ export default function OwnerDashboardCharts({
               {stockMovements.slice(0, 5).map((movement) => (
                 <div
                   key={movement.id}
-                  className="flex items-center justify-between gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800"
+                  className="flex items-center justify-between gap-3 border-b border-border py-3 last:border-0"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-xs font-medium text-slate-800 dark:text-slate-100">
+                    <p className="truncate text-xs font-medium text-foreground">
                       {movement.product.name}
                     </p>
 
-                    <p className="mt-1 truncate text-[10px] text-slate-400">
+                    <p className="mt-1 truncate text-[10px] text-muted-foreground">
                       {movement.movementNo} ·{" "}
                       {movement.type.replaceAll("_", " ")}
                     </p>
                   </div>
 
                   <div className="shrink-0 text-right">
-                    <p className="text-xs font-semibold text-slate-800 dark:text-white">
+                    <p className="text-xs font-semibold text-foreground">
                       {formatQuantity(movement.quantity)}
                     </p>
 
-                    <p className="mt-1 text-[10px] text-slate-400">
+                    <p className="mt-1 text-[10px] text-muted-foreground">
                       {new Date(
                         movement.createdAt,
                       ).toLocaleDateString()}
