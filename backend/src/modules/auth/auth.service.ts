@@ -129,54 +129,57 @@ export const authService = {
 
   // Refresh access token and rotate refresh token atomically
   async refresh(refreshToken: string): Promise<AuthTokens> {
-    if (!refreshToken) {
-      throw new Error("Refresh token is required");
-    }
+  if (!refreshToken) {
+    throw new AppError("Refresh token is required", 401);
+  }
 
-    const currentHash = hashRefreshToken(refreshToken);
+  const currentHash = hashRefreshToken(refreshToken);
 
-    const session =
-      await authRepository.findSessionByRefreshToken(currentHash);
+  const session =
+    await authRepository.findSessionByRefreshToken(currentHash);
 
-    if (!session || session.revokedAt) {
-      throw new Error("Invalid refresh token");
-    }
+  if (!session || session.revokedAt) {
+    throw new AppError("Invalid refresh token", 401);
+  }
 
-    if (session.expiresAt <= new Date()) {
-      throw new Error("Refresh token has expired");
-    }
+  if (session.expiresAt <= new Date()) {
+    throw new AppError("Refresh token has expired", 401);
+  }
 
-    if (session.user.status !== "ACTIVE") {
-      throw new Error("Your account is not active");
-    }
+  if (session.user.status !== "ACTIVE") {
+    throw new AppError("Your account is not active", 403);
+  }
 
-    if (!session.user.role.isActive) {
-      throw new Error("Your assigned role is not active");
-    }
+  if (!session.user.role.isActive) {
+    throw new AppError("Your assigned role is not active", 403);
+  }
 
-    const newRefreshToken = generateRefreshToken();
+  const newRefreshToken = generateRefreshToken();
 
-    const newSession = await authRepository.rotateSession({
-      sessionId: session.id,
-      currentRefreshTokenHash: currentHash,
-      newRefreshTokenHash: hashRefreshToken(newRefreshToken),
-      expiresAt: getRefreshTokenExpiry(),
-    });
+  const newSession = await authRepository.rotateSession({
+    sessionId: session.id,
+    currentRefreshTokenHash: currentHash,
+    newRefreshTokenHash: hashRefreshToken(newRefreshToken),
+    expiresAt: getRefreshTokenExpiry(),
+  });
 
-    if (!newSession) {
-      throw new Error("Refresh token has already been used or revoked");
-    }
+  if (!newSession) {
+    throw new AppError(
+      "Refresh token has already been used or revoked",
+      401,
+    );
+  }
 
-    const newAccessToken = generateAccessToken({
-      userId: session.userId,
-      sessionId: newSession.id,
-    });
+  const newAccessToken = generateAccessToken({
+    userId: session.userId,
+    sessionId: newSession.id,
+  });
 
-    return {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-    };
-  },
+  return {
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+  };
+},
 
 
   // Logout
@@ -204,31 +207,31 @@ async authenticateAccessToken(token: string): Promise<{
   const payload = authService.verifyAccessToken(token);
 
   const session = await authRepository.findSessionById(
-    payload.sessionId
+    payload.sessionId,
   );
 
   if (!session) {
-    throw new Error("Session not found");
+    throw new AppError("Session not found", 401);
   }
 
   if (session.userId !== payload.userId) {
-    throw new Error("Invalid session");
+    throw new AppError("Invalid session", 401);
   }
 
   if (session.revokedAt) {
-    throw new Error("Session has been revoked");
+    throw new AppError("Session has been revoked", 401);
   }
 
   if (session.expiresAt <= new Date()) {
-    throw new Error("Session has expired");
+    throw new AppError("Session has expired", 401);
   }
 
   if (session.user.status !== "ACTIVE") {
-    throw new Error("User account is not active");
+    throw new AppError("User account is not active", 403);
   }
 
   if (!session.user.role.isActive) {
-    throw new Error("Your assigned role is not active");
+    throw new AppError("Assigned role is not active", 403);
   }
 
   return {
@@ -237,22 +240,36 @@ async authenticateAccessToken(token: string): Promise<{
   };
 },
 
-
   // Verify access token
-  verifyAccessToken(token: string): AccessTokenPayload {
-  const decoded = jwt.verify(
-    token,
-    JWT_ACCESS_SECRET,
-    { algorithms: ["HS256"] }
-  ) as AccessTokenPayload;
+verifyAccessToken(token: string): AccessTokenPayload {
+  try {
+    const decoded = jwt.verify(
+      token,
+      JWT_ACCESS_SECRET,
+      { algorithms: ["HS256"] },
+    ) as AccessTokenPayload;
 
-  if (
-    typeof decoded.userId !== "string" ||
-    typeof decoded.sessionId !== "string"
-  ) {
-    throw new Error("Invalid access token payload");
+    if (
+      typeof decoded.userId !== "string" ||
+      typeof decoded.sessionId !== "string"
+    ) {
+      throw new AppError("Invalid access token payload", 401);
+    }
+
+    return decoded;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    if (
+      error instanceof jwt.JsonWebTokenError ||
+      error instanceof jwt.TokenExpiredError
+    ) {
+      throw new AppError("Invalid or expired access token", 401);
+    }
+
+    throw error;
   }
-
-  return decoded;
 },
 };

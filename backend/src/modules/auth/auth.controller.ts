@@ -4,6 +4,8 @@ import { authService } from "./auth.service.js";
 import { loginSchema } from "./auth.validation.js";
 import { AUTH_CONSTANTS } from "./auth.constant.js";
 import { generateCsrfToken } from "../../middlewares/csrf.middleware.js";
+import { AppError } from "../../lib/app-error.js";
+
 
 const ACCESS_COOKIE =
   AUTH_CONSTANTS.COOKIE_NAMES.ACCESS_TOKEN;
@@ -203,9 +205,15 @@ export const authController = {
         message: "Token refreshed successfully",
       });
     } catch (error) {
-      clearAuthCookies(res);
-      next(error);
-    }
+  if (
+    error instanceof AppError &&
+    (error.statusCode === 401 || error.statusCode === 403)
+  ) {
+    clearAuthCookies(res);
+  }
+
+  next(error);
+}
   },
 
 

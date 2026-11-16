@@ -1,3 +1,4 @@
+
 import type {
   Request,
   Response,
@@ -9,11 +10,10 @@ import { authService } from "./auth.service.js";
 import { AUTH_CONSTANTS } from "./auth.constant.js";
 import { attachAuditTrail } from "../../middlewares/audit-trail.middleware.js";
 
-// Verify access token and authenticate user
 export const authenticate: RequestHandler = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): Promise<void> => {
   try {
     const accessCookie =
@@ -43,11 +43,9 @@ export const authenticate: RequestHandler = async (
     req.authSessionId = authentication.sessionId;
 
     attachAuditTrail(req, res);
+
     next();
-  } catch {
-    res.status(401).json({
-      success: false,
-      message: "Invalid or expired authentication",
-    });
+  } catch (error) {
+    next(error);
   }
 };
